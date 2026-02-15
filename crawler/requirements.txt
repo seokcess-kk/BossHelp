@@ -1,0 +1,28 @@
+# BossHelp Data Pipeline Dependencies
+
+# Reddit API
+praw>=7.7.0
+
+# Web Scraping
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+requests>=2.31.0
+
+# OpenAI Embeddings
+openai>=1.12.0
+
+# Supabase
+supabase>=2.3.0
+
+# Text Processing
+tiktoken>=0.5.0
+html2text>=2024.2.26
+unidecode>=1.3.0
+
+# Utilities
+python-dotenv>=1.0.0
+tqdm>=4.66.0
+tenacity>=8.2.0
+
+# Type Hints
+pydantic>=2.5.0

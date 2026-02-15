@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:bosshelp-backend-production.up.railway.app)",
+      "WebFetch(domain:boss-help.vercel.app)",
+      "Bash(del \"C:\\\\Users\\\\assag\\\\solution\\\\BossHelp\\\\backend\\\\Dockerfile\")",
+      "Bash(del \"C:\\\\Users\\\\assag\\\\solution\\\\BossHelp\\\\backend\\\\start.sh\")",
+      "Bash(git -C \"C:/Users/assag/solution/BossHelp\" status)",
+      "Bash(git -C \"C:/Users/assag/solution/BossHelp\" diff --stat)",
+      "Bash(git -C \"C:/Users/assag/solution/BossHelp\" log --oneline -5)",
+      "Bash(git -C \"C:/Users/assag/solution/BossHelp\" add .gitignore CLAUDE.md backend/ crawler/ docs/ frontend/ scripts/ supabase/ .claude/)"
+    ]
+  }
+}

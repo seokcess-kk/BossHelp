@@ -1,0 +1,541 @@
+{
+  "timestamp": "2026-02-14T16:46:39.002Z",
+  "reason": "compaction",
+  "status": {
+    "version": "2.0",
+    "lastUpdated": "2026-02-14T16:41:45.896Z",
+    "activeFeatures": [
+      "bosshelp-mvp",
+      "frontend",
+      "stores",
+      "ui",
+      "layout",
+      "game",
+      "chat",
+      "[gameId]",
+      "backend",
+      "db",
+      "api",
+      "v1",
+      "core",
+      "rag",
+      "llm",
+      "entity"
+    ],
+    "primaryFeature": "bosshelp-mvp",
+    "features": {
+      "bosshelp-mvp": {
+        "name": "BossHelp MVP",
+        "description": "하드코어 게임 전문 AI Q&A 플랫폼",
+        "phase": "design",
+        "status": "completed",
+        "documents": {
+          "plan": "docs/01-plan/bosshelp-mvp.md",
+          "design": "docs/02-design/features/bosshelp-mvp.design.md"
+        },
+        "createdAt": "2026-02-15T09:00:00.000Z",
+        "updatedAt": "2026-02-15T09:30:00.000Z"
+      },
+      "frontend": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:17:38.042Z",
+          "lastUpdated": "2026-02-14T16:22:52.291Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\app\\page.tsx"
+      },
+      "stores": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:18:11.870Z",
+          "lastUpdated": "2026-02-14T16:18:29.694Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\stores\\chat-store.ts"
+      },
+      "ui": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:18:43.199Z",
+          "lastUpdated": "2026-02-14T16:19:10.321Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\ui\\Input.tsx"
+      },
+      "layout": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:19:24.479Z",
+          "lastUpdated": "2026-02-14T16:19:24.479Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\layout\\Header.tsx"
+      },
+      "game": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:19:36.113Z",
+          "lastUpdated": "2026-02-14T16:40:50.455Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\game\\CategoryFilter.tsx"
+      },
+      "chat": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:19:49.763Z",
+          "lastUpdated": "2026-02-14T16:21:22.778Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\chat\\ChatContainer.tsx"
+      },
+      "[gameId]": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:23:10.156Z",
+          "lastUpdated": "2026-02-14T16:41:45.896Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\app\\games\\[gameId]\\page.tsx"
+      },
+      "backend": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:24:09.858Z",
+          "lastUpdated": "2026-02-14T16:26:24.646Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\main.py"
+      },
+      "db": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:24:27.350Z",
+          "lastUpdated": "2026-02-14T16:25:01.453Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\db\\models.py"
+      },
+      "api": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:25:10.141Z",
+          "lastUpdated": "2026-02-14T16:25:10.141Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\api\\__init__.py"
+      },
+      "v1": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:25:18.769Z",
+          "lastUpdated": "2026-02-14T16:40:10.475Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\api\\v1\\ask.py"
+      },
+      "core": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:35:34.062Z",
+          "lastUpdated": "2026-02-14T16:35:34.062Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\__init__.py"
+      },
+      "rag": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:35:46.816Z",
+          "lastUpdated": "2026-02-14T16:39:26.834Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\pipeline.py"
+      },
+      "llm": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:35:57.579Z",
+          "lastUpdated": "2026-02-14T16:36:42.201Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\llm\\claude.py"
+      },
+      "entity": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-02-14T16:36:08.038Z",
+          "lastUpdated": "2026-02-14T16:37:32.690Z"
+        },
+        "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\entity\\dictionary.py"
+      }
+    },
+    "pipeline": {
+      "currentPhase": 2,
+      "level": "Dynamic",
+      "phaseHistory": [
+        {
+          "phase": 1,
+          "action": "plan",
+          "feature": "bosshelp-mvp",
+          "timestamp": "2026-02-15T09:00:00.000Z"
+        },
+        {
+          "phase": 2,
+          "action": "design",
+          "feature": "bosshelp-mvp",
+          "timestamp": "2026-02-15T09:30:00.000Z"
+        }
+      ]
+    },
+    "session": {
+      "startedAt": "2026-02-14T16:02:30.113Z",
+      "onboardingCompleted": true,
+      "lastActivity": "2026-02-14T16:41:45.896Z"
+    },
+    "history": [
+      {
+        "action": "plan_created",
+        "feature": "bosshelp-mvp",
+        "timestamp": "2026-02-15T09:00:00.000Z"
+      },
+      {
+        "action": "design_created",
+        "feature": "bosshelp-mvp",
+        "timestamp": "2026-02-15T09:30:00.000Z"
+      },
+      {
+        "timestamp": "2026-02-14T16:17:38.042Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:17:45.775Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:17:57.177Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:18:11.870Z",
+        "feature": "stores",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:18:29.694Z",
+        "feature": "stores",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:18:43.199Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:18:52.400Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:19:00.054Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:19:10.321Z",
+        "feature": "ui",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:19:24.479Z",
+        "feature": "layout",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:19:36.113Z",
+        "feature": "game",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:19:49.763Z",
+        "feature": "chat",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:20:02.604Z",
+        "feature": "chat",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:20:19.259Z",
+        "feature": "chat",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:20:51.309Z",
+        "feature": "chat",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:21:07.710Z",
+        "feature": "chat",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:21:22.778Z",
+        "feature": "chat",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:21:40.864Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:22:52.291Z",
+        "feature": "frontend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:23:10.156Z",
+        "feature": "[gameId]",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:24:09.858Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:24:19.811Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:24:27.350Z",
+        "feature": "db",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:24:45.819Z",
+        "feature": "db",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:25:01.453Z",
+        "feature": "db",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:25:10.141Z",
+        "feature": "api",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:25:18.770Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:25:34.608Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:26:02.821Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:26:12.677Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:26:24.646Z",
+        "feature": "backend",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:35:34.062Z",
+        "feature": "core",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:35:46.816Z",
+        "feature": "rag",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:35:57.579Z",
+        "feature": "llm",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:36:08.038Z",
+        "feature": "entity",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:36:25.814Z",
+        "feature": "llm",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:36:42.201Z",
+        "feature": "llm",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:37:32.690Z",
+        "feature": "entity",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:38:07.153Z",
+        "feature": "rag",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:38:33.004Z",
+        "feature": "rag",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:38:56.814Z",
+        "feature": "rag",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:39:26.834Z",
+        "feature": "rag",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:40:10.475Z",
+        "feature": "v1",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:40:50.455Z",
+        "feature": "game",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-02-14T16:41:45.896Z",
+        "feature": "[gameId]",
+        "phase": "do",
+        "action": "updated"
+      }
+    ]
+  }
+}
