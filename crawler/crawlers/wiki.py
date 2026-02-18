@@ -182,8 +182,8 @@ class WikiCrawler:
         soup = BeautifulSoup(response.text, "lxml")
         links: list[str] = []
 
-        # 테이블 또는 리스트에서 링크 추출
-        for a in soup.select("table a, .wiki-content a, #wiki-content-block a"):
+        # Fextralife Wiki 구조에 맞는 선택자
+        for a in soup.select("#article-body a, .wiki_table a, .article-body a, #wiki-content-block a, .infobox a"):
             href = a.get("href", "")
             if not href or any(re.search(p, href) for p in self.EXCLUDE_PATTERNS):
                 continue
@@ -220,9 +220,9 @@ class WikiCrawler:
         if not title:
             return None
 
-        # 본문 추출
+        # 본문 추출 (Fextralife Wiki 구조)
         content_elem = soup.select_one(
-            "#wiki-content-block, .wiki-content, #mw-content-text, .page-content"
+            "#article-body, .article-body, #wiki-content-block, .wiki-content, .page-content"
         )
         if not content_elem:
             return None

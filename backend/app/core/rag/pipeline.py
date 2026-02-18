@@ -93,6 +93,7 @@ class RAGPipeline:
             spoiler_level=spoiler_level,
             category=category,
             limit=10,
+            query=question,
         )
 
         # 4. Reranking

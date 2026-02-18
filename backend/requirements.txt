@@ -7,7 +7,6 @@ pydantic-settings==2.4.0
 
 # Database
 supabase==2.5.0
-asyncpg==0.29.0
 
 # LLM & Embedding
 anthropic==0.34.0
