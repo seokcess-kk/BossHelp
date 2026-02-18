@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-15T05:14:01.878Z",
+  "lastUpdated": "2026-02-18T14:54:07.438Z",
   "activeFeatures": [
     "bosshelp-mvp",
     "frontend",
@@ -203,9 +203,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:35:46.816Z",
-        "lastUpdated": "2026-02-14T16:39:26.834Z"
+        "lastUpdated": "2026-02-18T14:54:07.437Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\pipeline.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\retriever.py"
     },
     "llm": {
       "phase": "do",
@@ -242,9 +242,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:48:42.931Z",
-        "lastUpdated": "2026-02-15T05:14:01.878Z"
+        "lastUpdated": "2026-02-18T13:51:07.857Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\config.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\simple_wiki.py"
     },
     "crawlers": {
       "phase": "do",
@@ -255,7 +255,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:49:03.045Z",
-        "lastUpdated": "2026-02-14T16:49:57.109Z"
+        "lastUpdated": "2026-02-18T13:40:23.918Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawlers\\wiki.py"
     },
@@ -320,7 +320,7 @@
   "session": {
     "startedAt": "2026-02-14T16:02:30.113Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-15T05:14:01.878Z"
+    "lastActivity": "2026-02-18T14:54:07.438Z"
   },
   "history": [
     {
@@ -756,6 +756,96 @@
     {
       "timestamp": "2026-02-15T05:14:01.878Z",
       "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:25:45.328Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:40:16.658Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:40:23.918Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:42:36.879Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:44:47.796Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:50:49.420Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:50:58.740Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T13:51:07.857Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T14:48:01.863Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T14:48:16.052Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T14:51:12.687Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T14:51:21.299Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T14:51:38.076Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T14:51:52.671Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-18T14:54:07.437Z",
+      "feature": "rag",
       "phase": "do",
       "action": "updated"
     }

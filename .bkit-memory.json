@@ -1,0 +1,31 @@
+{
+  "activeFeature": "bosshelp-phase2",
+  "phase": "plan",
+  "previousFeature": "bosshelp-mvp",
+  "features": {
+    "bosshelp-mvp": {
+      "phase": "completed",
+      "matchRate": 96,
+      "iterationCount": 4,
+      "startedAt": "2026-02-15T00:00:00Z",
+      "completedAt": "2026-02-15T23:59:59Z",
+      "documents": {
+        "plan": "docs/01-plan/bosshelp-mvp.md",
+        "design": "docs/02-design/features/bosshelp-mvp.design.md",
+        "analysis": "docs/03-analysis/bosshelp-mvp.analysis.md",
+        "report": "docs/04-report/features/bosshelp-mvp.report.md"
+      }
+    },
+    "bosshelp-phase2": {
+      "phase": "plan",
+      "matchRate": null,
+      "iterationCount": 0,
+      "startedAt": "2026-02-19T00:00:00Z",
+      "completedAt": null,
+      "documents": {
+        "plan": "docs/01-plan/features/bosshelp-phase2.plan.md"
+      }
+    }
+  },
+  "lastUpdated": "2026-02-19T00:00:00Z"
+}
