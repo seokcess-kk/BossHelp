@@ -6,6 +6,21 @@
 
 ## 2026-02-23
 
+### [WL-009] Dockerfile 빌드 컨텍스트 경로 수정
+- **요청**: Railway 배포 실패 - requirements.txt not found
+- **원인**: 루트 railway.json에서 빌드 컨텍스트가 루트인데, Dockerfile은 backend/ 기준 경로 사용
+- **수정 파일**:
+  - `backend/Dockerfile` - `COPY backend/requirements.txt`, `COPY backend/ .`로 변경
+  - `.dockerignore` (루트) - 빌드 컨텍스트용 신규 생성
+- **커밋**: `d6c8317`
+- **상태**: ✅ 완료
+
+### [WL-008] Health 엔드포인트 진단 정보 추가
+- **요청**: Railway가 어떤 Supabase에 연결되어 있는지 확인
+- **수정 파일**: `backend/app/main.py` - supabase_project, env, version 추가
+- **커밋**: `16fe5eb`
+- **상태**: ✅ 완료
+
 ### [WL-007] 프로덕션 환경변수 설정 수정
 - **요청**: Railway 환경변수가 반영되지 않는 문제 해결
 - **원인**: pydantic-settings에서 `.env` 파일이 환경변수보다 우선됨
