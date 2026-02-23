@@ -28,7 +28,23 @@ class ApiClient {
 
   // Games
   async getGames(): Promise<{ games: Game[] }> {
-    return this.request('/api/v1/games');
+    const response = await this.request<{ games: Array<{
+      id: string;
+      title: string;
+      genre: 'soulslike' | 'metroidvania' | 'action_rpg';
+      thumbnail_url?: string;
+      is_active: boolean;
+    }> }>('/api/v1/games');
+
+    return {
+      games: response.games.map((game) => ({
+        id: game.id,
+        title: game.title,
+        genre: game.genre,
+        thumbnailUrl: game.thumbnail_url,
+        isActive: game.is_active,
+      })),
+    };
   }
 
   async getPopularQuestions(gameId: string): Promise<{ questions: PopularQuestion[] }> {
