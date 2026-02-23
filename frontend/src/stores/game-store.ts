@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import type { Game } from '@/types';
+import { api } from '@/lib/api';
 
-// Mock data for development
-const MOCK_GAMES: Game[] = [
+// Fallback data when API fails
+const FALLBACK_GAMES: Game[] = [
   { id: 'elden-ring', title: 'Elden Ring', genre: 'soulslike', isActive: true },
   { id: 'sekiro', title: 'Sekiro: Shadows Die Twice', genre: 'soulslike', isActive: true },
   { id: 'hollow-knight', title: 'Hollow Knight', genre: 'metroidvania', isActive: true },
-  { id: 'silksong', title: 'Hollow Knight: Silksong', genre: 'metroidvania', isActive: true },
   { id: 'lies-of-p', title: 'Lies of P', genre: 'soulslike', isActive: true },
 ];
 
@@ -22,20 +22,18 @@ interface GameState {
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
-  games: MOCK_GAMES,
+  games: [],
   selectedGame: null,
   isLoading: false,
 
   fetchGames: async () => {
     set({ isLoading: true });
     try {
-      // TODO: Replace with actual API call
-      // const response = await api.getGames();
-      // set({ games: response.games, isLoading: false });
-      set({ games: MOCK_GAMES, isLoading: false });
+      const response = await api.getGames();
+      set({ games: response.games, isLoading: false });
     } catch (error) {
       console.error('Failed to fetch games:', error);
-      set({ isLoading: false });
+      set({ games: FALLBACK_GAMES, isLoading: false });
     }
   },
 
