@@ -42,11 +42,15 @@ class VectorRetriever:
         # Build RPC call for vector search
         # This requires a Supabase function: search_chunks
         try:
-            # 쿼리에서 핵심 키워드 추출 (가장 긴 단어)
+            # 쿼리에서 핵심 키워드 추출 (대문자 단어 우선, 없으면 가장 긴 단어)
             search_keyword = None
             if query:
                 words = [w for w in query.split() if len(w) >= 3]
-                if words:
+                # 대문자로 시작하는 단어 우선 (엔티티 이름일 가능성 높음)
+                capitalized = [w for w in words if w[0].isupper() and w not in ("How", "What", "Where", "When", "Why", "Can", "Does", "The", "This")]
+                if capitalized:
+                    search_keyword = max(capitalized, key=len)
+                elif words:
                     search_keyword = max(words, key=len)
 
             print(f"[Retriever] RPC call: game={game_id}, spoiler_levels={spoiler_levels}, search_text={search_keyword}")

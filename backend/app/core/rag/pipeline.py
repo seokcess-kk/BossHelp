@@ -92,14 +92,14 @@ class RAGPipeline:
             query_for_embedding, game_id, category
         )
 
-        # 4. Vector Search
+        # 4. Vector Search (번역된 쿼리 사용)
         chunks = self.retriever.search(
             embedding=embedding,
             game_id=game_id,
             spoiler_level=spoiler_level,
             category=category,
             limit=10,
-            query=question,
+            query=translated_query,
         )
 
         # 5. Reranking
