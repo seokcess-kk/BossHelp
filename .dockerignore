@@ -1,0 +1,32 @@
+# Environment files (중요: 프로덕션에서 .env 제외)
+backend/.env
+backend/.env.*
+crawler/.env
+crawler/.env.*
+frontend/.env
+frontend/.env.local
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/.pytest_cache/
+**/.mypy_cache/
+
+# Node
+frontend/node_modules/
+frontend/.next/
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Docs (불필요)
+docs/
+
+# Tests
+**/tests/
