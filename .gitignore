@@ -36,3 +36,4 @@ htmlcov/
 
 # Word docs (optional - remove if needed)
 *.docx
+.vercel
