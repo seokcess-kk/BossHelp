@@ -62,6 +62,28 @@ GAME_CONFIGS: dict[str, GameConfig] = {
         min_upvotes=10,
         flairs=["Guide", "Tips", "Help", "Build"],
     ),
+    # Dark Souls 시리즈
+    "dark-souls": GameConfig(
+        id="dark-souls",
+        subreddit="darksouls",
+        wiki_base_url="https://darksouls.wiki.fextralife.com",
+        min_upvotes=10,
+        flairs=["Help", "Co-op", "PvP", "Lore"],
+    ),
+    "dark-souls-2": GameConfig(
+        id="dark-souls-2",
+        subreddit="DarkSouls2",
+        wiki_base_url="https://darksouls2.wiki.fextralife.com",
+        min_upvotes=10,
+        flairs=["Help", "Co-op", "Build", "Lore"],
+    ),
+    "dark-souls-3": GameConfig(
+        id="dark-souls-3",
+        subreddit="darksouls3",
+        wiki_base_url="https://darksouls3.wiki.fextralife.com",
+        min_upvotes=10,
+        flairs=["Help", "Co-op", "Build", "PVP", "Lore"],
+    ),
 }
 
 

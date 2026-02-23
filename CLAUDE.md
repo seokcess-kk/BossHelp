@@ -1,50 +1,88 @@
-# BossHelp - AI Game Guide Q&A Platform
+# CLAUDE.md
 
-## Project Level
-**Dynamic** - Fullstack with BaaS (Supabase)
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Tech Stack
-- **Frontend**: Next.js 14 (App Router) + TypeScript + TailwindCSS
-- **Backend**: Python FastAPI (RAG Pipeline)
-- **Database**: Supabase (PostgreSQL + pgvector)
-- **LLM**: Claude Sonnet 4 + OpenAI Embeddings
+## Project Overview
+BossHelp는 소울라이크/메트로바니아 게임 가이드를 위한 AI Q&A 플랫폼입니다. Reddit/Wiki에서 크롤링한 데이터를 RAG 파이프라인으로 처리하여 게임 관련 질문에 답변합니다.
 
-## Project Structure
+## Architecture
+
+### 3-Tier Architecture
 ```
-bosshelp/
-├── frontend/          # Next.js 14 App
-├── backend/           # FastAPI Backend
-├── crawler/           # Data Pipeline (Phase 2)
-├── supabase/          # DB Migrations
-└── docs/              # PDCA Documents
+[Frontend]          [Backend]           [Database]
+Next.js 16    →    FastAPI RAG    →    Supabase
+React 19           Claude + OpenAI     PostgreSQL + pgvector
 ```
 
-## Key Commands
+### RAG Pipeline Flow
+```
+Query → Entity Detection → Embedding → Vector Search → Rerank → Prompt → Claude → Answer
+       (dictionary.py)    (embeddings.py)  (retriever.py)  (reranker.py)  (claude.py)
+```
+
+### Data Pipeline Flow (Crawler)
+```
+Crawl → Clean → Classify → Quality Score → Chunk → Embed → Store
+(reddit/wiki)  (cleaner.py)  (classifier.py)  (quality.py)  (chunker.py)  (embedder.py)
+```
+
+## Commands
+
 ```bash
-# Frontend
+# Frontend (port 3000)
 cd frontend && npm run dev
+cd frontend && npm run build
+cd frontend && npm run lint
 
-# Backend
+# Backend (port 8000)
 cd backend && uvicorn app.main:app --reload
+cd backend && python -m pytest
 
-# Database Migration
-# Run in Supabase SQL Editor: supabase/migrations/001_initial_schema.sql
+# Crawler
+cd crawler && python pipeline.py --mode initial --games elden-ring
+cd crawler && python pipeline.py --mode update
+
+# Database
+# Supabase SQL Editor에서 실행: supabase/migrations/*.sql
 ```
 
-## Current Phase
-- Phase 1: Foundation (완료)
-- Phase 2: Data Pipeline (다음)
-- Phase 3: RAG Backend
-- Phase 4: Frontend Integration
+## Environment Variables
+
+### Backend (.env)
+- `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` - Supabase 연결
+- `ANTHROPIC_API_KEY` - Claude API (답변 생성)
+- `OPENAI_API_KEY` - OpenAI Embeddings (text-embedding-3-small, 1536차원)
+- `ADMIN_API_KEY` - 관리자 API 인증
+
+### Crawler (.env)
+- `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET` - Reddit API
+- Supabase + OpenAI 동일
+
+### Frontend
+- `NEXT_PUBLIC_API_URL` - Backend API URL
+
+## Key Modules
+
+### Backend
+- `app/core/rag/pipeline.py` - RAG 파이프라인 오케스트레이터
+- `app/core/rag/retriever.py` - pgvector 벡터 검색
+- `app/core/entity/dictionary.py` - 게임별 엔티티 사전 (용어 정규화)
+- `app/api/v1/ask.py` - Q&A 엔드포인트
+
+### Frontend
+- `src/hooks/useChat.ts` - 채팅 상태 관리 (React Query)
+- `src/stores/chat-store.ts` - Zustand 전역 상태
+- `src/lib/api.ts` - API 클라이언트
+
+### Database (Supabase)
+- `chunks` - 벡터 DB (embedding VECTOR(1536))
+- `games` - 지원 게임 목록
+- `conversations` - 대화 로그
 
 ## Conventions
-- TypeScript strict mode
-- Korean comments for business logic
-- API endpoints: `/api/v1/...`
-- Components: PascalCase
-- Files: kebab-case or camelCase
-
-## Important Files
-- `docs/01-plan/bosshelp-mvp.md` - Plan document
-- `docs/02-design/features/bosshelp-mvp.design.md` - Design document
-- `supabase/migrations/001_initial_schema.sql` - DB schema
+- API endpoints: `/api/v1/...` (public), `/api/admin/...` (internal)
+- Frontend components: PascalCase
+- Backend modules: snake_case
+- 비즈니스 로직 주석: 한국어
+- Spoiler levels: `none`, `light`, `heavy`
+- Categories: `boss_guide`, `build_guide`, `progression_route`, `npc_quest`, `item_location`, `mechanic_tip`, `secret_hidden`

@@ -100,24 +100,55 @@ class SupabaseStore:
     def _flush_batch(self, batch: list[dict]) -> int:
         """배치 플러시."""
         try:
-            result = (
+            # 기존 source_url 확인
+            source_urls = [item["source_url"] for item in batch]
+            existing = (
                 self.client.table("chunks")
-                .upsert(batch, on_conflict="source_url")
+                .select("source_url")
+                .in_("source_url", source_urls)
                 .execute()
             )
-            return len(result.data) if result.data else 0
-        except Exception as e:
-            print(f"Batch upsert error: {e}")
-            # 개별 저장 시도
+            existing_urls = {row["source_url"] for row in existing.data}
+
+            # 새 데이터와 업데이트 데이터 분리
+            new_items = [item for item in batch if item["source_url"] not in existing_urls]
+            update_items = [item for item in batch if item["source_url"] in existing_urls]
+
             saved = 0
-            for item in batch:
+
+            # 새 데이터 insert
+            if new_items:
+                result = self.client.table("chunks").insert(new_items).execute()
+                saved += len(result.data) if result.data else 0
+
+            # 기존 데이터 update
+            for item in update_items:
                 try:
-                    self.client.table("chunks").upsert(
-                        item, on_conflict="source_url"
+                    self.client.table("chunks").update(item).eq(
+                        "source_url", item["source_url"]
                     ).execute()
                     saved += 1
                 except Exception:
                     continue
+
+            return saved
+        except Exception as e:
+            print(f"Batch save error: {e}")
+            # 개별 저장 시도
+            saved = 0
+            for item in batch:
+                try:
+                    self.client.table("chunks").insert(item).execute()
+                    saved += 1
+                except Exception:
+                    # 이미 존재하면 업데이트
+                    try:
+                        self.client.table("chunks").update(item).eq(
+                            "source_url", item["source_url"]
+                        ).execute()
+                        saved += 1
+                    except Exception:
+                        continue
             return saved
 
     def log_crawl(self, result: CrawlResult) -> str | None:

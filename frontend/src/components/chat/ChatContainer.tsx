@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useChatStore } from '@/stores/chat-store';
 import { MessageBubble } from './MessageBubble';
 import { QuestionInput } from './QuestionInput';
-import { SpoilerSelector } from './SpoilerSelector';
+import { Sidebar } from '@/components/layout/Sidebar';
 import { MessageCircle } from 'lucide-react';
 
 interface ChatContainerProps {
@@ -30,9 +30,7 @@ export function ChatContainer({ gameId, gameTitle }: ChatContainerProps) {
     <div className="flex flex-col h-[calc(100vh-56px)]">
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar - Desktop */}
-        <aside className="hidden lg:flex w-64 border-r border-border flex-col p-4 bg-surface/50">
-          <SpoilerSelector />
-        </aside>
+        <Sidebar />
 
         {/* Chat Area */}
         <main className="flex-1 flex flex-col">

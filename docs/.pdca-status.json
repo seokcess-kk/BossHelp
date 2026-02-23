@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-18T14:54:07.438Z",
+  "lastUpdated": "2026-02-23T05:12:42.522Z",
   "activeFeatures": [
     "bosshelp-mvp",
     "frontend",
@@ -29,14 +29,19 @@
     "bosshelp-mvp": {
       "name": "BossHelp MVP",
       "description": "하드코어 게임 전문 AI Q&A 플랫폼",
-      "phase": "design",
+      "phase": "completed",
       "status": "completed",
+      "matchRate": 93,
+      "iterationCount": 0,
       "documents": {
         "plan": "docs/01-plan/bosshelp-mvp.md",
-        "design": "docs/02-design/features/bosshelp-mvp.design.md"
+        "design": "docs/02-design/features/bosshelp-mvp.design.md",
+        "analysis": "docs/03-analysis/bosshelp-mvp.analysis.md",
+        "report": "docs/04-report/bosshelp-mvp.report.md"
       },
       "createdAt": "2026-02-15T09:00:00.000Z",
-      "updatedAt": "2026-02-15T09:30:00.000Z"
+      "updatedAt": "2026-02-23T05:45:00.000Z",
+      "completedAt": "2026-02-23T05:45:00.000Z"
     },
     "frontend": {
       "phase": "do",
@@ -47,9 +52,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:17:38.042Z",
-        "lastUpdated": "2026-02-14T19:30:43.278Z"
+        "lastUpdated": "2026-02-23T03:38:40.749Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\hooks\\index.ts"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\types\\index.ts"
     },
     "stores": {
       "phase": "do",
@@ -60,7 +65,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:18:11.870Z",
-        "lastUpdated": "2026-02-14T16:18:29.694Z"
+        "lastUpdated": "2026-02-23T03:39:15.027Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\stores\\chat-store.ts"
     },
@@ -86,7 +91,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:19:24.479Z",
-        "lastUpdated": "2026-02-14T16:19:24.479Z"
+        "lastUpdated": "2026-02-23T03:38:03.357Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\layout\\Header.tsx"
     },
@@ -99,9 +104,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:19:36.113Z",
-        "lastUpdated": "2026-02-14T16:40:50.455Z"
+        "lastUpdated": "2026-02-23T03:37:30.188Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\game\\CategoryFilter.tsx"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\game\\GameSelector.tsx"
     },
     "chat": {
       "phase": "do",
@@ -112,7 +117,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:19:49.763Z",
-        "lastUpdated": "2026-02-14T16:21:22.778Z"
+        "lastUpdated": "2026-02-23T03:38:04.907Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\components\\chat\\ChatContainer.tsx"
     },
@@ -229,7 +234,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:36:08.038Z",
-        "lastUpdated": "2026-02-14T16:37:32.690Z"
+        "lastUpdated": "2026-02-23T03:43:46.951Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\entity\\dictionary.py"
     },
@@ -242,9 +247,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:48:42.931Z",
-        "lastUpdated": "2026-02-18T13:51:07.857Z"
+        "lastUpdated": "2026-02-23T05:12:42.522Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\simple_wiki.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawl_dark_souls_json.py"
     },
     "crawlers": {
       "phase": "do",
@@ -255,7 +260,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:49:03.045Z",
-        "lastUpdated": "2026-02-18T13:40:23.918Z"
+        "lastUpdated": "2026-02-23T05:10:09.653Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawlers\\wiki.py"
     },
@@ -268,9 +273,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:50:03.908Z",
-        "lastUpdated": "2026-02-14T16:51:51.065Z"
+        "lastUpdated": "2026-02-23T04:22:02.266Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\processors\\embedder.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\processors\\chunker.py"
     },
     "admin": {
       "phase": "do",
@@ -294,9 +299,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-15T04:07:23.441Z",
-        "lastUpdated": "2026-02-15T04:27:05.659Z"
+        "lastUpdated": "2026-02-23T03:46:21.310Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\scripts\\setup-railway-env.sh"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\scripts\\run_migration.py"
     }
   },
   "pipeline": {
@@ -320,7 +325,7 @@
   "session": {
     "startedAt": "2026-02-14T16:02:30.113Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-18T14:54:07.438Z"
+    "lastActivity": "2026-02-23T05:12:42.522Z"
   },
   "history": [
     {
@@ -846,6 +851,216 @@
     {
       "timestamp": "2026-02-18T14:54:07.437Z",
       "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-19T03:04:05.656Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:37:30.188Z",
+      "feature": "game",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:37:32.281Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:37:33.807Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:38:03.357Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:38:04.907Z",
+      "feature": "chat",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:38:27.846Z",
+      "feature": "stores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:38:40.749Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:38:47.558Z",
+      "feature": "stores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:39:15.027Z",
+      "feature": "stores",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:42:55.721Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:43:46.951Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:43:59.682Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:45:28.744Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T03:46:21.310Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:02:49.352Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:03:18.866Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:03:55.168Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:04:35.350Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:04:51.845Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:05:06.861Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:22:02.266Z",
+      "feature": "processors",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:39:20.195Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:40:31.480Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:42:35.764Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:43:14.321Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:43:35.839Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:44:11.945Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T04:51:55.622Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T05:08:22.519Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T05:09:17.222Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T05:09:47.966Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T05:10:09.653Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T05:11:56.560Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-23T05:12:42.522Z",
+      "feature": "crawler",
       "phase": "do",
       "action": "updated"
     }

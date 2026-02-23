@@ -146,17 +146,35 @@ class TextChunker:
         tokens = self.encoder.encode(text)
         chunks: list[str] = []
 
+        # 빈 텍스트 체크
+        if not tokens:
+            return []
+
+        # 이미 충분히 작으면 그대로 반환
+        if len(tokens) <= self.config.max_tokens:
+            return [text]
+
         start = 0
-        while start < len(tokens):
+        max_iterations = len(tokens) // (self.config.max_tokens - self.config.overlap_tokens) + 10
+
+        for _ in range(max_iterations):
+            if start >= len(tokens):
+                break
+
             end = min(start + self.config.max_tokens, len(tokens))
             chunk_tokens = tokens[start:end]
             chunk_text = self.encoder.decode(chunk_tokens)
             chunks.append(chunk_text)
 
-            # 오버랩 적용
-            start = end - self.config.overlap_tokens
-            if start < 0:
-                start = end
+            # 마지막 청크면 종료
+            if end >= len(tokens):
+                break
+
+            # 오버랩 적용 (최소 1 토큰은 전진)
+            step = self.config.max_tokens - self.config.overlap_tokens
+            if step < 1:
+                step = self.config.max_tokens
+            start += step
 
         return chunks
 

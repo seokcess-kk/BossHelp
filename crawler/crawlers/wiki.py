@@ -261,23 +261,26 @@ class WikiCrawler:
         """구조화된 콘텐츠 추출 (섹션 구분 유지)."""
         parts: list[str] = []
 
-        for child in element.children:
-            if child.name in ["h1", "h2", "h3", "h4"]:
-                level = int(child.name[1])
+        # 모든 하위 요소를 순회 (중첩된 div 처리)
+        for elem in element.find_all(["h1", "h2", "h3", "h4", "p", "ul", "ol", "table"]):
+            if elem.name in ["h1", "h2", "h3", "h4"]:
+                level = int(elem.name[1])
                 prefix = "#" * level
-                parts.append(f"\n{prefix} {child.get_text(strip=True)}\n")
-            elif child.name == "p":
-                text = child.get_text(strip=True)
+                text = elem.get_text(strip=True)
                 if text:
+                    parts.append(f"\n{prefix} {text}\n")
+            elif elem.name == "p":
+                text = elem.get_text(strip=True)
+                if text and len(text) > 10:  # 너무 짧은 단락 제외
                     parts.append(text)
-            elif child.name in ["ul", "ol"]:
-                for li in child.select("li"):
+            elif elem.name in ["ul", "ol"]:
+                for li in elem.find_all("li", recursive=False):
                     text = li.get_text(strip=True)
                     if text:
                         parts.append(f"- {text}")
-            elif child.name == "table":
+            elif elem.name == "table":
                 # 테이블은 간단히 처리
-                for row in child.select("tr"):
+                for row in elem.select("tr"):
                     cells = [td.get_text(strip=True) for td in row.select("td, th")]
                     if cells:
                         parts.append(" | ".join(cells))

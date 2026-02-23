@@ -33,7 +33,9 @@ export interface Message {
   sources?: Source[];
   hasDetail?: boolean;
   conversationId?: string;
+  gameId?: string;
   isLoading?: boolean;
+  isExpanded?: boolean;
   timestamp: Date;
 }
 

@@ -1,6 +1,12 @@
 """BossHelp Crawlers."""
 
-from .reddit import RedditCrawler
-from .wiki import WikiCrawler
+# PRAW 의존성 옵션
+try:
+    from .reddit import RedditCrawler
+except ImportError:
+    RedditCrawler = None
 
-__all__ = ["RedditCrawler", "WikiCrawler"]
+from .wiki import WikiCrawler
+from .reddit_json import RedditJsonCrawler
+
+__all__ = ["RedditCrawler", "WikiCrawler", "RedditJsonCrawler"]
