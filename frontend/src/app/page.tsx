@@ -1,11 +1,11 @@
 'use client';
 
-import { useGameStore } from '@/stores/game-store';
+import { useGames } from '@/hooks/useGames';
 import { GameCard } from '@/components/game/GameCard';
 import { Gamepad2, Zap, Shield, MessageCircle } from 'lucide-react';
 
 export default function HomePage() {
-  const { games } = useGameStore();
+  const { games, isLoading } = useGames();
 
   return (
     <main className="min-h-[calc(100vh-56px)]">
@@ -74,9 +74,19 @@ export default function HomePage() {
             어떤 게임에서 막히셨나요?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {games.map((game) => (
-              <GameCard key={game.id} game={game} />
-            ))}
+            {isLoading ? (
+              <div className="col-span-full text-center text-text-secondary py-8">
+                게임 목록을 불러오는 중...
+              </div>
+            ) : games.length === 0 ? (
+              <div className="col-span-full text-center text-text-secondary py-8">
+                게임 목록을 불러올 수 없습니다.
+              </div>
+            ) : (
+              games.map((game) => (
+                <GameCard key={game.id} game={game} />
+              ))
+            )}
           </div>
         </div>
       </section>
