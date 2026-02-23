@@ -6,6 +6,25 @@
 
 ## 2026-02-23
 
+### [WL-012] Query Translation 버그 수정
+- **요청**: 한글 질문 번역 후 검색 실패 문제
+- **원인**:
+  - Haiku 모델 ID 오류 (`claude-3-5-haiku-20241022` → 존재하지 않음)
+  - 벡터 검색 시 원본 한글 쿼리 사용 (번역된 쿼리 미사용)
+  - 키워드 추출이 엔티티 이름 대신 일반 단어 선택
+- **수정 내용**:
+  - `backend/app/core/rag/translator.py`:
+    - 모델 ID 수정: `claude-3-haiku-20240307`
+  - `backend/app/core/rag/pipeline.py`:
+    - retriever.search()에 `translated_query` 전달
+  - `backend/app/core/rag/retriever.py`:
+    - 키워드 추출 시 대문자 단어(엔티티) 우선 선택
+- **테스트 결과**:
+  - "보르트 보스 공략 알려줘" → ✅ Vordt 공략 응답 성공
+  - "PvP 빌드 추천해줘" → ✅ 빌드 추천 응답 성공
+- **커밋**: `dbf2b5b`
+- **상태**: ✅ 완료
+
 ### [WL-011] RAG 파이프라인 한글/영어 질문 지원
 - **요청**: 한글 질문 "타소니아 공략 방법 알려줘" → "관련 정보를 찾지 못했습니다" 문제 해결
 - **원인**: 크롤링 데이터는 영어(Wiki/Reddit), 질문은 한글 → 임베딩 매칭 불가
@@ -17,11 +36,11 @@
   - `backend/app/core/rag/pipeline.py`:
     - translator import 및 의존성 주입
     - run() 메서드에 번역 단계 추가 (Step 1)
-- **예상 결과**:
+- **테스트 결과**:
   - Before: "심연의 감시자 공략" → 검색 실패
   - After: "심연의 감시자 공략" → "Abyss Watchers guide" 번역 → 검색 성공
-- **커밋**: (pending)
-- **상태**: 🔄 구현 완료, 테스트 대기
+- **커밋**: `038d218`
+- **상태**: ✅ 완료
 
 ### [WL-010] Ask API Mock 모드 제거 및 실제 RAG 연동
 - **요청**: 프론트에서 질문 시 "[개발 모드]" Mock 응답 대신 실제 RAG 파이프라인 사용
