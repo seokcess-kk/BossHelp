@@ -9,6 +9,7 @@ from app.core.llm.claude import ClaudeClient, get_claude_client
 from app.core.rag.retriever import VectorRetriever, get_vector_retriever
 from app.core.rag.reranker import QualityReranker
 from app.core.rag.prompt import PromptBuilder
+from app.core.rag.translator import QueryTranslator, get_query_translator
 from app.core.entity.dictionary import EntityDictionary, get_entity_dictionary
 
 
@@ -45,10 +46,12 @@ class RAGPipeline:
         embedding_client: EmbeddingClient | None = None,
         claude_client: ClaudeClient | None = None,
         retriever: VectorRetriever | None = None,
+        translator: QueryTranslator | None = None,
     ):
         self.embedding_client = embedding_client or get_embedding_client()
         self.claude_client = claude_client or get_claude_client()
         self.retriever = retriever or get_vector_retriever()
+        self.translator = translator or get_query_translator()
         self.reranker = QualityReranker()
         self.prompt_builder = PromptBuilder()
 
@@ -75,18 +78,21 @@ class RAGPipeline:
         """
         start_time = time.time()
 
-        # 1. Query Processing
-        entity_dict = get_entity_dictionary(game_id)
-        entities = entity_dict.extract_entities(question)
-        queries = entity_dict.expand_query(question)
+        # 1. Query Translation (한글 → 영어)
+        translated_query = self.translator.translate(question, game_id)
 
-        # 2. Generate Embedding (use English version if available)
+        # 2. Query Processing (엔티티 추출은 번역된 쿼리로)
+        entity_dict = get_entity_dictionary(game_id)
+        entities = entity_dict.extract_entities(translated_query)
+        queries = entity_dict.expand_query(translated_query)
+
+        # 3. Generate Embedding (번역된 쿼리 사용)
         query_for_embedding = queries[-1] if len(queries) > 1 else queries[0]
         embedding = self.embedding_client.embed_query(
             query_for_embedding, game_id, category
         )
 
-        # 3. Vector Search
+        # 4. Vector Search
         chunks = self.retriever.search(
             embedding=embedding,
             game_id=game_id,
@@ -96,7 +102,7 @@ class RAGPipeline:
             query=question,
         )
 
-        # 4. Reranking
+        # 5. Reranking
         if chunks:
             # Apply entity boost
             chunks = self.reranker.apply_entity_boost(chunks, entities)
@@ -105,7 +111,7 @@ class RAGPipeline:
             # Rerank by combined score
             chunks = self.reranker.rerank(chunks, top_k=5)
 
-        # 5. Build Prompt
+        # 6. Build Prompt
         system_prompt = self.prompt_builder.build_system_prompt(spoiler_level)
 
         if chunks:
@@ -115,7 +121,7 @@ class RAGPipeline:
         else:
             user_message = self.prompt_builder.build_no_results_message(question)
 
-        # 6. Generate Answer
+        # 7. Generate Answer
         answer = self.claude_client.generate_answer(
             system_prompt=system_prompt,
             user_message=user_message,

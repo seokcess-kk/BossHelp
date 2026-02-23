@@ -7,9 +7,9 @@
 | Feature | BossHelp MVP |
 | Design Document | `docs/02-design/features/bosshelp-mvp.design.md` |
 | Implementation Paths | `frontend/`, `backend/`, `crawler/`, `supabase/` |
-| Analysis Date | 2026-02-15 |
+| Analysis Date | 2026-02-23 |
 | Analyzer | gap-detector Agent |
-| Iteration | 4 (Post Hooks Implementation) |
+| Iteration | 5 (Post Query Translation) |
 
 ---
 
@@ -204,14 +204,18 @@ None - All critical features are implemented.
 | 4 | expandAnswer() full impl | design.md:849 | Medium |
 | 5 | Steam Crawler | design.md:65 | Low |
 
-### Added Features (Not in Design)
+### Added Features (Not in Design - Positive Extensions)
 
-| # | Feature | Location |
-|---|---------|----------|
-| 1 | Health endpoint | `backend/app/main.py` |
-| 2 | Search function RPC | `002_search_function.sql` |
-| 3 | Mock response fallback | `backend/app/api/v1/ask.py` |
-| 4 | Admin crawl API | `backend/app/api/admin/crawl.py` |
+| # | Feature | Location | Description |
+|---|---------|----------|-------------|
+| 1 | Health endpoint | `backend/app/main.py` | Server health check |
+| 2 | Search function RPC | `002_search_function.sql` | Vector search RPC |
+| 3 | Admin crawl API | `backend/app/api/admin/crawl.py` | Manual crawl trigger |
+| 4 | Query Translator | `backend/app/core/rag/translator.py` | Korean→English translation with Haiku |
+| 5 | Entity Boost | `backend/app/core/rag/reranker.py` | 1.2x boost for entity matches |
+| 6 | Content Deduplication | `backend/app/core/rag/reranker.py` | 0.9 threshold dedup |
+| 7 | Dark Souls Series | `backend/app/core/entity/dictionary.py` | DS1/2/3 entity dictionaries |
+| 8 | Streaming Response | `backend/app/core/llm/claude.py` | `generate_answer_stream()` |
 
 ---
 
@@ -223,6 +227,7 @@ None - All critical features are implemented.
 | 2026-02-15 | 2 (Post Act-1: RAG) | 94% | ✅ Above threshold |
 | 2026-02-15 | 3 (Post Phase 2: Crawler) | 92% | ✅ Above threshold |
 | 2026-02-15 | 4 (Post Hooks) | 96% | ✅ Excellent |
+| 2026-02-23 | 5 (Post Query Translation) | 93% | ✅ Passed |
 
 ---
 
@@ -262,12 +267,47 @@ Match Rate 92% ≥ 90% 이므로:
 
 ---
 
+## 2026-02-23 Update: Query Translation Implementation
+
+### New Feature Added
+
+**Query Translator** (`backend/app/core/rag/translator.py`)
+
+한글 질문을 영어로 번역하여 영어 DB 데이터와 매칭:
+
+```
+한글 질문 "심연의 감시자 공략"
+    → Haiku 번역 → "Abyss Watchers guide"
+    → 벡터 검색 → 관련 chunks 발견
+```
+
+**Key Features:**
+- Claude 3.5 Haiku 모델 사용 (빠르고 저렴)
+- MD5 해시 기반 캐싱
+- 영어 질문은 번역 없이 통과
+- 번역 실패 시 원본 반환 (graceful fallback)
+
+### RAG Pipeline Flow Update
+
+```
+기존: Query → Entity Dict → Embedding → Search
+신규: Query → Translation → Entity Dict → Embedding → Search
+```
+
+### Mock Mode Removal Verification
+
+- `ask.py`: Mock 모드 완전 제거 ✅
+- `chat-store.ts`: Mock fallback 제거 ✅
+
+---
+
 ## Document Info
 
 | Item | Value |
 |------|-------|
-| Version | 3.0 |
+| Version | 4.0 |
 | Created | 2026-02-15 |
-| Previous Match Rate | 75% → 94% → 92% |
-| Current Match Rate | 96% |
-| Status | ✅ Excellent |
+| Updated | 2026-02-23 |
+| Previous Match Rate | 75% → 94% → 92% → 96% |
+| Current Match Rate | 93% |
+| Status | ✅ Passed |
