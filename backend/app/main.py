@@ -43,7 +43,14 @@ def create_app() -> FastAPI:
 
     @app.get("/health")
     async def health_check():
-        return {"status": "healthy", "version": "1.0.0"}
+        # 진단용: Supabase URL 호스트만 표시 (API 키는 숨김)
+        supabase_host = settings.SUPABASE_URL.split("//")[-1].split(".")[0] if settings.SUPABASE_URL else "not_set"
+        return {
+            "status": "healthy",
+            "version": "1.1.0",
+            "env": settings.ENV,
+            "supabase_project": supabase_host,
+        }
 
     return app
 
