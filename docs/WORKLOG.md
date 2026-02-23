@@ -6,6 +6,23 @@
 
 ## 2026-02-23
 
+### [WL-010] Ask API Mock 모드 제거 및 실제 RAG 연동
+- **요청**: 프론트에서 질문 시 "[개발 모드]" Mock 응답 대신 실제 RAG 파이프라인 사용
+- **원인**:
+  - Backend: `VALID_GAMES` 하드코딩 리스트에 다크소울 시리즈 미포함
+  - Backend: RAG 실패 시 Mock fallback 존재
+  - Frontend: API 에러 시 Mock 응답 반환
+- **수정 내용**:
+  - `backend/app/api/v1/ask.py`:
+    - `VALID_GAMES` 하드코딩 제거 → DB에서 게임 검증 (`validate_game_id()`)
+    - `is_rag_available()` 체크 및 Mock fallback 완전 제거
+    - 모든 질문이 RAG 파이프라인으로 처리됨
+  - `frontend/src/stores/chat-store.ts`:
+    - Mock fallback 응답 제거
+    - API 에러 시 `error` 상태로 표시
+- **커밋**: (대기)
+- **상태**: ✅ 코드 수정 완료
+
 ### [WL-009] Dockerfile 빌드 컨텍스트 경로 수정
 - **요청**: Railway 배포 실패 - requirements.txt not found
 - **원인**: 루트 railway.json에서 빌드 컨텍스트가 루트인데, Dockerfile은 backend/ 기준 경로 사용
@@ -89,7 +106,7 @@
 
 | ID | 설명 | 우선순위 | 상태 |
 |----|------|----------|------|
-| TODO-001 | Frontend Mock 데이터 제거 (ask.py, chat-store.ts) | 중간 | 대기 |
+| ~~TODO-001~~ | ~~Frontend Mock 데이터 제거 (ask.py, chat-store.ts)~~ | ~~중간~~ | ✅ WL-010 완료 |
 | TODO-002 | 게임 상세 페이지 하드코딩 제거 | 낮음 | 대기 |
 | TODO-003 | 인기 질문 DB 연동 (현재 Mock) | 낮음 | 대기 |
 

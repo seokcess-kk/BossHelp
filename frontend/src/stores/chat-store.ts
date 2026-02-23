@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Message, SpoilerLevel, Category, Source } from '@/types';
+import type { Message, SpoilerLevel, Category } from '@/types';
 import { generateSessionId } from '@/lib/utils';
 import { api } from '@/lib/api';
 
@@ -71,32 +71,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
         isLoading: false,
       }));
     } catch (error) {
-      // For development, add mock response
-      const mockSources: Source[] = [
-        {
-          url: 'https://reddit.com/r/Eldenring/example',
-          title: 'Boss Guide - Community Tips',
-          sourceType: 'reddit',
-          qualityScore: 0.85,
-        },
-      ];
-
-      const mockMessage: Message = {
-        id: `msg_${Date.now()}_ai`,
-        role: 'assistant',
-        content: `[개발 모드] "${question}"에 대한 답변입니다.\n\n아직 백엔드가 연결되지 않았습니다. 실제 서비스에서는 RAG 기반의 정확한 답변이 제공됩니다.`,
-        sources: mockSources,
-        hasDetail: true,
-        conversationId: `conv_${Date.now()}`,
-        gameId: gameId,
-        timestamp: new Date(),
-      };
-
-      set((state) => ({
-        messages: [...state.messages, mockMessage],
+      console.error('Failed to send message:', error);
+      set({
         isLoading: false,
-        error: null,
-      }));
+        error: error instanceof Error ? error.message : '답변 생성에 실패했습니다. 다시 시도해주세요.',
+      });
     }
   },
 
