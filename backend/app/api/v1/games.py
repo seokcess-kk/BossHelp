@@ -1,17 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from app.db.models import GamesResponse, Game, PopularQuestionsResponse, PopularQuestion
+from app.db.supabase import db
 
 router = APIRouter()
 
-# Mock data for development
-MOCK_GAMES = [
-    Game(id="elden-ring", title="Elden Ring", genre="soulslike", is_active=True),
-    Game(id="sekiro", title="Sekiro: Shadows Die Twice", genre="soulslike", is_active=True),
-    Game(id="hollow-knight", title="Hollow Knight", genre="metroidvania", is_active=True),
-    Game(id="silksong", title="Hollow Knight: Silksong", genre="metroidvania", is_active=True),
-    Game(id="lies-of-p", title="Lies of P", genre="soulslike", is_active=True),
-]
-
+# 인기 질문 Mock 데이터 (추후 DB 연동)
 MOCK_POPULAR = {
     "elden-ring": [
         PopularQuestion(question="말레니아 어떻게 깸?", category="boss_guide", ask_count=150),
@@ -27,16 +20,27 @@ MOCK_POPULAR = {
 
 @router.get("/games", response_model=GamesResponse)
 async def get_games():
-    """Get all available games."""
-    # TODO: Replace with actual DB call
-    # games = await db.get_games()
-    return GamesResponse(games=MOCK_GAMES)
+    """Get all available games from database."""
+    games_data = await db.get_games(active_only=True)
+    games = [
+        Game(
+            id=g["id"],
+            title=g["title"],
+            genre=g.get("genre", "soulslike"),
+            thumbnail_url=g.get("thumbnail_url"),
+            is_active=g.get("is_active", True),
+        )
+        for g in games_data
+    ]
+    return GamesResponse(games=games)
 
 
 @router.get("/games/{game_id}/popular", response_model=PopularQuestionsResponse)
 async def get_popular_questions(game_id: str):
     """Get popular questions for a specific game."""
-    if game_id not in [g.id for g in MOCK_GAMES]:
+    # DB에서 게임 존재 여부 확인
+    game = await db.get_game(game_id)
+    if not game:
         raise HTTPException(status_code=404, detail="Game not found")
 
     # TODO: Replace with actual DB call
