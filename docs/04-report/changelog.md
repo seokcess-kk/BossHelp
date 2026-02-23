@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-02-23
+
+### Dark Souls Series & Production Fixes
+
+**게임 확장 및 프로덕션 배포 안정화**
+
+#### Added
+
+- **Dark Souls 시리즈 3개 게임 추가**
+  - Dark Souls: Remastered
+  - Dark Souls II: Scholar of the First Sin
+  - Dark Souls III
+- Wiki 크롤러로 보스/아이템/지역 데이터 수집
+- 총 지원 게임: 5개 → 8개
+
+#### Changed
+
+- **Frontend**: 하드코딩된 게임 목록 → DB API 호출로 변경
+- **Backend config**: 프로덕션에서 환경변수만 사용 (`.env` 파일 비활성화)
+- **DEBUG 기본값**: `True` → `False` (프로덕션 안전)
+- API 응답 snake_case → camelCase 자동 변환
+
+#### Fixed
+
+- Railway 환경변수가 반영되지 않던 문제 해결
+- Docker 이미지에 `.env` 파일 포함되던 문제 해결 (`.dockerignore` 추가)
+- Vercel 배포 시 standalone 출력 오류 수정
+- useGames 훅이 게임 목록을 로드하지 않던 문제 수정
+
+#### Removed
+
+- `/games/debug/raw` 디버그 엔드포인트 제거
+
+#### Technical
+
+- **커밋 범위**: `cfbf650` → `1f52d1d`
+- **배포**: Frontend (Vercel), Backend (Railway), DB (Supabase)
+
+---
+
 ## [1.0.0] - 2026-02-15
 
 ### MVP Release - AI Game Guide Q&A Platform

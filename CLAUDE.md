@@ -86,3 +86,24 @@ cd crawler && python pipeline.py --mode update
 - 비즈니스 로직 주석: 한국어
 - Spoiler levels: `none`, `light`, `heavy`
 - Categories: `boss_guide`, `build_guide`, `progression_route`, `npc_quest`, `item_location`, `mechanic_tip`, `secret_hidden`
+
+## Work Logging (필수)
+
+**모든 작업은 반드시 기록해야 합니다.**
+
+### 작업 시작 시
+1. `docs/WORKLOG.md`에 새 항목 추가 (WL-XXX 형식)
+2. 요청 내용, 예상 수정 파일 기록
+
+### 작업 완료 시
+1. `docs/WORKLOG.md` 상태를 ✅ 완료로 변경
+2. 실제 수정된 파일, 커밋 해시 기록
+3. 중요 변경 시 `docs/04-report/changelog.md`도 업데이트
+
+### 버그/이슈 발견 시
+1. `docs/WORKLOG.md`의 미해결 이슈 섹션에 TODO-XXX로 추가
+
+### 참고 파일
+- `docs/WORKLOG.md` - 작업 요청/완료 로그 (중복 방지용)
+- `docs/04-report/changelog.md` - 버전별 변경 이력
+- `docs/.pdca-status.json` - PDCA 자동 추적 (bkit)
