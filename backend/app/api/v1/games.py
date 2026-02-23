@@ -35,13 +35,6 @@ async def get_games():
     return GamesResponse(games=games)
 
 
-@router.get("/games/debug/raw")
-async def get_games_debug():
-    """Debug endpoint to see raw DB response."""
-    games_data = await db.get_games(active_only=False)
-    return {"count": len(games_data), "games": games_data}
-
-
 @router.get("/games/{game_id}/popular", response_model=PopularQuestionsResponse)
 async def get_popular_questions(game_id: str):
     """Get popular questions for a specific game."""
