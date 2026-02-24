@@ -4,15 +4,23 @@
 - URL: https://www.reddit.com/r/{subreddit}/top/.json
 - 인증 불필요
 - Rate limit: ~10 requests/minute
+
+수집 모드:
+- initial: /top?t=all (역대 최고 인기)
+- daily: /hot + /new + 댓글 (일일 업데이트)
 """
 
 import time
 import httpx
 from datetime import datetime, timezone
-from typing import Generator
+from typing import Generator, Literal
 
 from crawler.config import get_game_config, GameConfig, GAME_NAME_MAPPING, COMMON_SUBREDDITS
 from crawler.models import RawDocument, SourceType, CrawlResult
+
+
+# 수집 모드 타입
+CrawlMode = Literal["initial", "daily"]
 
 
 def detect_game_from_title(title: str) -> str | None:
@@ -322,8 +330,8 @@ class RedditJsonCrawler:
         # 콘텐츠
         content = post_data.get("selftext") or ""
 
-        # 너무 짧은 콘텐츠 제외
-        if len(content.strip()) < 50:
+        # 너무 짧은 콘텐츠 제외 (30자 이상)
+        if len(content.strip()) < 30:
             return None
 
         # 타임스탬프 변환
@@ -341,6 +349,336 @@ class RedditJsonCrawler:
             upvotes=score,
             comments_count=post_data.get("num_comments", 0),
             flair=post_data.get("link_flair_text"),
+        )
+
+    # ========== 댓글 수집 ==========
+
+    def crawl_comments(
+        self,
+        game_id: str,
+        post_limit: int = 50,
+        comments_per_post: int = 20,
+        sort: str = "top",
+    ) -> Generator[RawDocument, None, CrawlResult]:
+        """
+        인기 게시물의 댓글 수집.
+
+        Args:
+            game_id: 게임 ID
+            post_limit: 댓글을 수집할 게시물 수
+            comments_per_post: 게시물당 수집할 댓글 수
+            sort: 정렬 방식 (top, best, new)
+
+        Yields:
+            RawDocument: 댓글 문서
+        """
+        game_config = get_game_config(game_id)
+        started_at = datetime.now(timezone.utc)
+        comments_crawled = 0
+        error_message = None
+
+        try:
+            # 먼저 인기 게시물 목록 가져오기
+            posts = list(self._get_top_posts_for_comments(game_config, post_limit))
+            print(f"  [Comments] Found {len(posts)} posts to crawl comments from")
+
+            for post_url, post_title in posts:
+                try:
+                    for doc in self._crawl_post_comments(
+                        post_url, post_title, game_config, comments_per_post, sort
+                    ):
+                        comments_crawled += 1
+                        yield doc
+                except Exception as e:
+                    print(f"    ✗ Error crawling comments: {e}")
+                    continue
+
+                time.sleep(self.delay)
+
+            status = "success"
+
+        except Exception as e:
+            error_message = str(e)
+            status = "failed" if comments_crawled == 0 else "partial"
+
+        print(f"  [Comments] Total collected: {comments_crawled}")
+
+        return CrawlResult(
+            game_id=game_id,
+            source_type=SourceType.REDDIT,
+            status=status,
+            pages_crawled=comments_crawled,
+            error_message=error_message,
+            started_at=started_at,
+            completed_at=datetime.now(timezone.utc),
+        )
+
+    def _get_top_posts_for_comments(
+        self,
+        game_config: GameConfig,
+        limit: int,
+    ) -> Generator[tuple[str, str], None, None]:
+        """댓글 수집을 위한 인기 게시물 URL 목록."""
+        collected = 0
+        per_sub = limit // len(game_config.subreddits)
+
+        for subreddit in game_config.subreddits:
+            url = f"{self.BASE_URL}/r/{subreddit}/top/.json"
+            params = {"t": "all", "limit": min(100, per_sub)}
+
+            try:
+                response = self.client.get(url, params=params)
+                response.raise_for_status()
+                data = response.json()
+
+                for post in data.get("data", {}).get("children", []):
+                    post_data = post.get("data", {})
+                    # 댓글이 있는 게시물만
+                    if post_data.get("num_comments", 0) >= 5:
+                        permalink = post_data.get("permalink", "")
+                        title = post_data.get("title", "")
+                        if permalink:
+                            collected += 1
+                            yield (permalink, title)
+                            if collected >= limit:
+                                return
+
+                time.sleep(self.delay)
+
+            except Exception as e:
+                print(f"    ✗ Error fetching posts from r/{subreddit}: {e}")
+
+    def _crawl_post_comments(
+        self,
+        permalink: str,
+        post_title: str,
+        game_config: GameConfig,
+        limit: int,
+        sort: str,
+    ) -> Generator[RawDocument, None, None]:
+        """단일 게시물의 댓글 수집."""
+        url = f"{self.BASE_URL}{permalink}.json"
+        params = {"sort": sort, "limit": limit}
+
+        response = self.client.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        # Reddit 댓글 JSON 구조: [post_data, comments_data]
+        if len(data) < 2:
+            return
+
+        comments_data = data[1].get("data", {}).get("children", [])
+
+        for comment in comments_data:
+            if comment.get("kind") != "t1":  # t1 = comment
+                continue
+
+            comment_data = comment.get("data", {})
+            doc = self._process_comment(comment_data, post_title, game_config)
+            if doc:
+                yield doc
+
+    def _process_comment(
+        self,
+        comment_data: dict,
+        post_title: str,
+        game_config: GameConfig,
+    ) -> RawDocument | None:
+        """댓글을 RawDocument로 변환."""
+        # 삭제된 댓글 제외
+        body = comment_data.get("body", "")
+        if not body or body in ["[removed]", "[deleted]"]:
+            return None
+
+        # 너무 짧은 댓글 제외 (20자 이상)
+        if len(body.strip()) < 20:
+            return None
+
+        # upvote 필터 (댓글은 5 이상)
+        score = comment_data.get("score", 0)
+        if score < 5:
+            return None
+
+        # 타임스탬프
+        created_utc = comment_data.get("created_utc", 0)
+        created_at = datetime.fromtimestamp(created_utc, tz=timezone.utc)
+
+        # 댓글 URL
+        permalink = comment_data.get("permalink", "")
+
+        return RawDocument(
+            game_id=game_config.id,
+            source_type=SourceType.REDDIT,
+            source_url=f"https://reddit.com{permalink}" if permalink else "",
+            title=f"[Comment] {post_title[:50]}",  # 원본 게시물 제목 포함
+            content=body,
+            author=comment_data.get("author"),
+            created_at=created_at,
+            upvotes=score,
+            comments_count=0,
+            flair=None,
+        )
+
+    # ========== 일일 업데이트 (hot + new) ==========
+
+    def crawl_daily(
+        self,
+        game_id: str,
+        hot_limit: int = 100,
+        new_limit: int = 50,
+        include_comments: bool = True,
+        comments_post_limit: int = 20,
+    ) -> Generator[RawDocument, None, CrawlResult]:
+        """
+        일일 업데이트: hot + new + 댓글 수집.
+
+        Args:
+            game_id: 게임 ID
+            hot_limit: hot 게시물 수집 수
+            new_limit: new 게시물 수집 수
+            include_comments: 댓글 수집 여부
+            comments_post_limit: 댓글 수집할 게시물 수
+
+        Yields:
+            RawDocument: 수집된 문서
+        """
+        game_config = get_game_config(game_id)
+        started_at = datetime.now(timezone.utc)
+        total_crawled = 0
+        error_message = None
+
+        try:
+            # 1. Hot posts
+            print(f"  [Daily] Crawling /hot (limit: {hot_limit})...")
+            hot_count = 0
+            for doc in self._crawl_by_sort(game_config, "hot", hot_limit):
+                total_crawled += 1
+                hot_count += 1
+                yield doc
+            print(f"    → Hot: {hot_count}")
+
+            # 2. New posts
+            print(f"  [Daily] Crawling /new (limit: {new_limit})...")
+            new_count = 0
+            for doc in self._crawl_by_sort(game_config, "new", new_limit):
+                total_crawled += 1
+                new_count += 1
+                yield doc
+            print(f"    → New: {new_count}")
+
+            # 3. Comments (선택적)
+            if include_comments:
+                print(f"  [Daily] Crawling comments (posts: {comments_post_limit})...")
+                comments_count = 0
+                for doc in self.crawl_comments(game_id, comments_post_limit, 15):
+                    total_crawled += 1
+                    comments_count += 1
+                    yield doc
+                print(f"    → Comments: {comments_count}")
+
+            status = "success"
+
+        except Exception as e:
+            error_message = str(e)
+            status = "failed" if total_crawled == 0 else "partial"
+
+        return CrawlResult(
+            game_id=game_id,
+            source_type=SourceType.REDDIT,
+            status=status,
+            pages_crawled=total_crawled,
+            error_message=error_message,
+            started_at=started_at,
+            completed_at=datetime.now(timezone.utc),
+        )
+
+    def _crawl_by_sort(
+        self,
+        game_config: GameConfig,
+        sort: str,  # "hot", "new", "rising"
+        limit: int,
+    ) -> Generator[RawDocument, None, None]:
+        """정렬 방식별 게시물 수집."""
+        subreddits = game_config.subreddits
+        per_sub_limit = limit // len(subreddits)
+
+        for subreddit in subreddits:
+            url = f"{self.BASE_URL}/r/{subreddit}/{sort}/.json"
+            params = {"limit": min(100, per_sub_limit)}
+
+            try:
+                response = self.client.get(url, params=params)
+                response.raise_for_status()
+                data = response.json()
+
+                for post in data.get("data", {}).get("children", []):
+                    post_data = post.get("data", {})
+                    doc = self._process_post(post_data, game_config)
+                    if doc:
+                        yield doc
+
+                time.sleep(self.delay)
+
+            except Exception as e:
+                print(f"    ✗ Error crawling r/{subreddit}/{sort}: {e}")
+
+    # ========== 초기 + 댓글 통합 수집 ==========
+
+    def crawl_initial_with_comments(
+        self,
+        game_id: str,
+        post_limit: int = 500,
+        comments_post_limit: int = 50,
+    ) -> Generator[RawDocument, None, CrawlResult]:
+        """
+        초기 수집 + 댓글 통합.
+
+        Args:
+            game_id: 게임 ID
+            post_limit: top 게시물 수집 수
+            comments_post_limit: 댓글 수집할 게시물 수
+
+        Yields:
+            RawDocument: 수집된 문서
+        """
+        started_at = datetime.now(timezone.utc)
+        total_crawled = 0
+        error_message = None
+
+        try:
+            # 1. Top posts
+            print(f"  [Initial] Crawling top posts (limit: {post_limit})...")
+            posts_count = 0
+            for doc in self.crawl_initial(game_id, post_limit):
+                total_crawled += 1
+                posts_count += 1
+                yield doc
+            print(f"    → Posts: {posts_count}")
+
+            # 2. Comments
+            print(f"  [Initial] Crawling comments (posts: {comments_post_limit})...")
+            comments_count = 0
+            for doc in self.crawl_comments(game_id, comments_post_limit, 20):
+                total_crawled += 1
+                comments_count += 1
+                yield doc
+            print(f"    → Comments: {comments_count}")
+
+            status = "success"
+
+        except Exception as e:
+            error_message = str(e)
+            status = "failed" if total_crawled == 0 else "partial"
+
+        return CrawlResult(
+            game_id=game_id,
+            source_type=SourceType.REDDIT,
+            status=status,
+            pages_crawled=total_crawled,
+            error_message=error_message,
+            started_at=started_at,
+            completed_at=datetime.now(timezone.utc),
         )
 
 

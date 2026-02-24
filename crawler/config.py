@@ -85,35 +85,175 @@ GAME_CONFIGS: dict[str, GameConfig] = {
 COMMON_SUBREDDITS = ["fromsoftware", "soulslike", "shittydarksouls"]
 
 
-# 게임 이름 매핑 (제목 자동 분류용)
+# 게임 이름 매핑 (제목 자동 분류용) - 보스/캐릭터명 포함
 GAME_NAME_MAPPING = {
-    # Elden Ring
+    # ========== Elden Ring ==========
     "elden ring": "elden-ring",
     "eldenring": "elden-ring",
-    # Dark Souls 3
+    # Elden Ring 보스/캐릭터
+    "malenia": "elden-ring",
+    "radahn": "elden-ring",
+    "morgott": "elden-ring",
+    "godrick": "elden-ring",
+    "rennala": "elden-ring",
+    "radagon": "elden-ring",
+    "maliketh": "elden-ring",
+    "mohg": "elden-ring",
+    "godfrey": "elden-ring",
+    "margit": "elden-ring",
+    "ranni": "elden-ring",
+    "melina": "elden-ring",
+    "torrent": "elden-ring",
+    "tarnished": "elden-ring",
+    "lands between": "elden-ring",
+    "moonveil": "elden-ring",
+    "rivers of blood": "elden-ring",
+    "mimic tear": "elden-ring",
+    "let me solo her": "elden-ring",
+
+    # ========== Dark Souls 3 ==========
     "dark souls 3": "dark-souls-3",
     "dark souls iii": "dark-souls-3",
     "ds3": "dark-souls-3",
     "darksouls3": "dark-souls-3",
-    # Dark Souls 2
+    # DS3 보스/캐릭터
+    "nameless king": "dark-souls-3",
+    "soul of cinder": "dark-souls-3",
+    "pontiff sulyvahn": "dark-souls-3",
+    "sulyvahn": "dark-souls-3",
+    "abyss watchers": "dark-souls-3",
+    "dancer of the boreal": "dark-souls-3",
+    "yhorm": "dark-souls-3",
+    "aldrich": "dark-souls-3",
+    "twin princes": "dark-souls-3",
+    "lorian": "dark-souls-3",
+    "lothric": "dark-souls-3",
+    "sister friede": "dark-souls-3",
+    "friede": "dark-souls-3",
+    "slave knight gael": "dark-souls-3",
+    "gael": "dark-souls-3",
+    "midir": "dark-souls-3",
+    "ashen one": "dark-souls-3",
+    "firelink shrine": "dark-souls-3",
+
+    # ========== Dark Souls 2 ==========
     "dark souls 2": "dark-souls-2",
     "dark souls ii": "dark-souls-2",
     "ds2": "dark-souls-2",
     "darksouls2": "dark-souls-2",
-    # Dark Souls 1
-    "dark souls": "dark-souls",
-    "ds1": "dark-souls",
-    "darksouls": "dark-souls",
+    "scholar of the first sin": "dark-souls-2",
+    "sotfs": "dark-souls-2",
+    # DS2 보스/캐릭터
+    "fume knight": "dark-souls-2",
+    "sir alonne": "dark-souls-2",
+    "sinh": "dark-souls-2",
+    "ivory king": "dark-souls-2",
+    "burnt ivory king": "dark-souls-2",
+    "velstadt": "dark-souls-2",
+    "looking glass knight": "dark-souls-2",
+    "pursuer": "dark-souls-2",
+    "smelter demon": "dark-souls-2",
+    "nashandra": "dark-souls-2",
+    "vendrick": "dark-souls-2",
+    "majula": "dark-souls-2",
+    "bearer of the curse": "dark-souls-2",
+
+    # ========== Dark Souls 1 ==========
     "dark souls remastered": "dark-souls",
-    # Sekiro
+    "dsr": "dark-souls",
+    "ds1": "dark-souls",
+    # DS1 보스/캐릭터 (주의: "dark souls" 단독은 마지막에)
+    "ornstein": "dark-souls",
+    "smough": "dark-souls",
+    "o&s": "dark-souls",
+    "artorias": "dark-souls",
+    "sif": "dark-souls",
+    "great grey wolf": "dark-souls",
+    "gwyn": "dark-souls",
+    "lord of cinder": "dark-souls",  # DS1 specific context
+    "kalameet": "dark-souls",
+    "manus": "dark-souls",
+    "quelaag": "dark-souls",
+    "nito": "dark-souls",
+    "seath": "dark-souls",
+    "four kings": "dark-souls",
+    "solaire": "dark-souls",
+    "praise the sun": "dark-souls",
+    "patches": "dark-souls",
+    "lordran": "dark-souls",
+    "chosen undead": "dark-souls",
+    "anor londo": "dark-souls",
+    "darksouls": "dark-souls",
+    "dark souls": "dark-souls",  # 가장 마지막에 (다른 DS 시리즈 먼저 매칭)
+
+    # ========== Sekiro ==========
     "sekiro": "sekiro",
-    # Hollow Knight
+    "shadows die twice": "sekiro",
+    # Sekiro 보스/캐릭터
+    "isshin": "sekiro",
+    "sword saint": "sekiro",
+    "genichiro": "sekiro",
+    "guardian ape": "sekiro",
+    "headless ape": "sekiro",
+    "owl": "sekiro",
+    "great shinobi": "sekiro",
+    "lady butterfly": "sekiro",
+    "gyoubu": "sekiro",
+    "emma": "sekiro",
+    "wolf": "sekiro",
+    "shinobi": "sekiro",
+    "ashina": "sekiro",
+    "divine dragon": "sekiro",
+    "demon of hatred": "sekiro",
+    "kuro": "sekiro",
+
+    # ========== Hollow Knight ==========
     "hollow knight": "hollow-knight",
     "hollowknight": "hollow-knight",
-    "silksong": "hollow-knight",  # Silksong → hollow-knight
-    # Lies of P
+    "silksong": "hollow-knight",
+    # Hollow Knight 보스/캐릭터
+    "hornet": "hollow-knight",
+    "the knight": "hollow-knight",
+    "grimm": "hollow-knight",
+    "nightmare king": "hollow-knight",
+    "nkg": "hollow-knight",
+    "radiance": "hollow-knight",
+    "absolute radiance": "hollow-knight",
+    "pure vessel": "hollow-knight",
+    "grey prince zote": "hollow-knight",
+    "zote": "hollow-knight",
+    "soul master": "hollow-knight",
+    "mantis lords": "hollow-knight",
+    "sisters of battle": "hollow-knight",
+    "hallownest": "hollow-knight",
+    "pale king": "hollow-knight",
+    "white lady": "hollow-knight",
+    "void": "hollow-knight",
+    "charm": "hollow-knight",
+    "geo": "hollow-knight",
+    "dirtmouth": "hollow-knight",
+    "godhome": "hollow-knight",
+    "pantheon": "hollow-knight",
+
+    # ========== Lies of P ==========
     "lies of p": "lies-of-p",
     "liesofp": "lies-of-p",
+    "lie of p": "lies-of-p",
+    # Lies of P 보스/캐릭터
+    "pinocchio": "lies-of-p",
+    "sophia": "lies-of-p",
+    "geppetto": "lies-of-p",
+    "fallen archbishop": "lies-of-p",
+    "king of puppets": "lies-of-p",
+    "simon manus": "lies-of-p",
+    "laxasia": "lies-of-p",
+    "victor": "lies-of-p",
+    "scrapped watchman": "lies-of-p",
+    "puppet": "lies-of-p",
+    "ergo": "lies-of-p",
+    "krat": "lies-of-p",
+    "hotel krat": "lies-of-p",
+    "stalker": "lies-of-p",
 }
 
 
