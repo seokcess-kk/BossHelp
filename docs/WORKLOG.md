@@ -6,6 +6,38 @@
 
 ## 2026-02-23
 
+### [WL-014] 보스/아이템 추가 데이터 수집 및 RAG 검증
+- **요청**: 보스 공략, 아이템 위치 데이터 부족 문제 해결
+- **수집 내용**:
+  - `crawl_bosses_items.py`: 카테고리별 집중 크롤링 (4,854 chunks)
+  - `crawl_specific_pages.py`: 주요 보스/무기 페이지 직접 크롤링 (702 chunks)
+- **수정 내용**:
+  - `backend/app/core/rag/retriever.py`: 키워드 추출 시 구두점 제거 버그 수정
+- **RAG 테스트 결과**:
+  - Malenia 공략: ✅ (heavy spoiler 설정 시 상세 공략 제공)
+  - Radahn 공략: ✅ (Scarlet Rot 전략 등)
+  - Moonveil 위치: ✅ (Gael Tunnel, Magma Wyrm)
+- **참고**: 보스 공략 정보는 heavy spoiler로 분류됨 (의도된 동작)
+- **상태**: ✅ 완료
+
+### [WL-013] 나머지 게임 데이터 수집 완료
+- **요청**: 다크소울 외 나머지 게임들의 데이터 수집
+- **수집 대상**: Elden Ring, Dark Souls 3, Sekiro, Dark Souls 2, Lies of P, Hollow Knight, Silksong
+- **수집 방법**: Reddit JSON API + Fextralife Wiki 크롤링
+- **결과**:
+  | Game | Reddit | Wiki | Chunks |
+  |------|--------|------|--------|
+  | Elden Ring | 41 | 349 | 12,046 |
+  | Dark Souls 3 | 23 | 229 | 7,752 |
+  | Sekiro | 28 | 208 | 3,610 |
+  | Dark Souls 2 | 41 | 249 | 4,764 |
+  | Lies of P | 37 | 247 | 2,045 |
+  | Hollow Knight | 76 | 150 | 811 |
+  | Silksong | 76 | 0 | 33 |
+  | **Total** | **322** | **1,432** | **31,061** |
+- **스크립트**: `crawler/crawl_remaining_games.py` (신규 생성)
+- **상태**: ✅ 완료
+
 ### [WL-012] Query Translation 버그 수정
 - **요청**: 한글 질문 번역 후 검색 실패 문제
 - **원인**:

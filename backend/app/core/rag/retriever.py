@@ -45,13 +45,20 @@ class VectorRetriever:
             # 쿼리에서 핵심 키워드 추출 (대문자 단어 우선, 없으면 가장 긴 단어)
             search_keyword = None
             if query:
-                words = [w for w in query.split() if len(w) >= 3]
+                # 구두점 제거
+                import re
+                clean_query = re.sub(r'[^\w\s]', '', query)
+                words = [w for w in clean_query.split() if len(w) >= 3]
                 # 대문자로 시작하는 단어 우선 (엔티티 이름일 가능성 높음)
-                capitalized = [w for w in words if w[0].isupper() and w not in ("How", "What", "Where", "When", "Why", "Can", "Does", "The", "This")]
+                stop_words = {"How", "What", "Where", "When", "Why", "Can", "Does", "The", "This", "Are", "Could", "Would", "Should"}
+                capitalized = [w for w in words if w[0].isupper() and w not in stop_words]
                 if capitalized:
                     search_keyword = max(capitalized, key=len)
                 elif words:
-                    search_keyword = max(words, key=len)
+                    # stop words 제외하고 가장 긴 단어
+                    non_stop = [w for w in words if w not in stop_words]
+                    if non_stop:
+                        search_keyword = max(non_stop, key=len)
 
             print(f"[Retriever] RPC call: game={game_id}, spoiler_levels={spoiler_levels}, search_text={search_keyword}")
 

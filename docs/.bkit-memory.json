@@ -1,8 +1,23 @@
 {
-  "sessionCount": 16,
+  "sessionCount": 25,
   "lastSession": {
-    "startedAt": "2026-02-23T06:21:35.794Z",
+    "startedAt": "2026-02-24T00:54:35.074Z",
     "platform": "claude",
     "level": "Starter"
-  }
+  },
+  "currentFeature": "remaining-games-data",
+  "phase": "do",
+  "matchRate": null,
+  "phaseHistory": [
+    {
+      "phase": "plan",
+      "timestamp": "2026-02-23T10:00:00.000Z",
+      "document": "docs/01-plan/features/remaining-games-data.plan.md"
+    },
+    {
+      "phase": "do",
+      "timestamp": "2026-02-23T11:40:00.000Z",
+      "note": "크롤링 완료: 31,061 chunks"
+    }
+  ]
 }
