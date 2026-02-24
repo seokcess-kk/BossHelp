@@ -6,6 +6,30 @@
 
 ## 2026-02-24
 
+### [WL-017] Reddit 데이터 수집 확장 (reddit-expansion)
+- **요청**: Reddit 데이터 수집 개수 및 서브레딧 확장
+- **구현 내용**:
+  - **수집 개수 증가**: 200 → 500 posts per game
+  - **복수 서브레딧 지원**: `subreddit: str` → `subreddits: list[str]`
+  - **게임별 추가 서브레딧**:
+    - Elden Ring: +eldenringdiscussion, +EldenRingLoreTalk
+    - Hollow Knight: +HollowKnightdaily, +HollowKnightArt, +ASilksong
+    - Dark Souls: +darksoulsremastered
+  - **Silksong 통합**: silksong 제거 → hollow-knight로 통합
+  - **공통 서브레딧**: r/fromsoftware, r/soulslike, r/shittydarksouls
+    - 제목 기반 자동 게임 분류 (`GAME_NAME_MAPPING`)
+    - `crawl_common_subreddit()` 메서드 추가
+- **수정 파일**:
+  - `crawler/config.py`: GameConfig.subreddits 변경, COMMON_SUBREDDITS, GAME_NAME_MAPPING 추가
+  - `crawler/crawlers/reddit_json.py`: 복수 서브레딧 순회, 공통 서브레딧 크롤링
+  - `crawler/crawl_remaining_games.py`: reddit_limit 증가, --include-common/--common-only 옵션
+- **CLI 사용법**:
+  - `python crawl_remaining_games.py --games all`: 전체 게임 (500 posts/game)
+  - `python crawl_remaining_games.py --include-common`: 게임 + 공통 서브레딧
+  - `python crawl_remaining_games.py --common-only`: 공통 서브레딧만
+- **예상 결과**: ~250 posts → ~1,830 posts (7배 증가)
+- **상태**: ✅ 완료
+
 ### [WL-016] RAG 답변 최적화 구현 (answer-optimization)
 - **요청**: RAG 파이프라인 답변 품질 향상 및 응답 속도 개선
 - **구현 내용**:

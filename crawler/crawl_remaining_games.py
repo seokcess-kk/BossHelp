@@ -40,44 +40,135 @@ from processors.chunker import TextChunker
 from processors.embedder import EmbeddingGenerator
 from store import SupabaseStore
 
-# 수집 대상 게임 (우선순위 순)
+# 수집 대상 게임 (우선순위 순) - Reddit 500개로 증가
 GAMES_CONFIG = {
     "elden-ring": {
         "name": "Elden Ring",
-        "reddit_limit": 200,
+        "reddit_limit": 500,  # 200 → 500
         "wiki_limit": 50,  # 카테고리당
     },
     "dark-souls-3": {
         "name": "Dark Souls III",
-        "reddit_limit": 200,
+        "reddit_limit": 500,  # 200 → 500
         "wiki_limit": 40,
     },
     "sekiro": {
         "name": "Sekiro: Shadows Die Twice",
-        "reddit_limit": 200,
+        "reddit_limit": 500,  # 200 → 500
         "wiki_limit": 40,
     },
     "dark-souls-2": {
         "name": "Dark Souls II",
-        "reddit_limit": 200,
+        "reddit_limit": 500,  # 200 → 500
+        "wiki_limit": 40,
+    },
+    "dark-souls": {
+        "name": "Dark Souls",
+        "reddit_limit": 500,  # 신규 추가
         "wiki_limit": 40,
     },
     "lies-of-p": {
         "name": "Lies of P",
-        "reddit_limit": 200,
+        "reddit_limit": 500,  # 200 → 500
         "wiki_limit": 40,
     },
     "hollow-knight": {
-        "name": "Hollow Knight",
-        "reddit_limit": 200,
+        "name": "Hollow Knight (+ Silksong)",  # Silksong 통합
+        "reddit_limit": 500,  # 200 → 500, Silksong 포함
         "wiki_limit": 40,
     },
-    "silksong": {
-        "name": "Hollow Knight: Silksong",
-        "reddit_limit": 100,
-        "wiki_limit": 0,  # 미출시
-    },
+    # "silksong" 제거 → hollow-knight로 통합
 }
+
+# 공통 서브레딧 설정
+COMMON_SUBREDDITS_CONFIG = {
+    "fromsoftware": {"limit": 300},
+    "soulslike": {"limit": 300},
+    "shittydarksouls": {"limit": 300},
+}
+
+
+def crawl_common_subreddits():
+    """
+    공통 서브레딧 크롤링 (r/fromsoftware, r/soulslike, r/shittydarksouls).
+    제목 기반으로 게임을 자동 분류합니다.
+    """
+    print(f"\n{'='*60}")
+    print("  Common Subreddits (Auto-Classification)")
+    print(f"{'='*60}")
+
+    # 컴포넌트 초기화
+    reddit_crawler = RedditJsonCrawler()
+    cleaner = TextCleaner()
+    classifier = CategoryClassifier()
+    quality_scorer = QualityScorer()
+    chunker = TextChunker()
+    embedder = EmbeddingGenerator()
+    store = SupabaseStore()
+
+    all_docs = []
+
+    for subreddit, config in COMMON_SUBREDDITS_CONFIG.items():
+        print(f"\n[Common] r/{subreddit} (limit: {config['limit']})...")
+        try:
+            for doc in reddit_crawler.crawl_common_subreddit(subreddit, limit=config["limit"]):
+                all_docs.append(doc)
+        except Exception as e:
+            print(f"  ✗ Error: {e}")
+
+    if not all_docs:
+        print(f"\n[SKIP] No documents collected from common subreddits")
+        return {
+            "source": "common_subreddits",
+            "total_docs": 0,
+            "chunks": 0,
+            "status": "no_data",
+            "by_game": {}
+        }
+
+    # 게임별 통계
+    by_game = {}
+    for doc in all_docs:
+        by_game[doc.game_id] = by_game.get(doc.game_id, 0) + 1
+
+    print(f"\n[Processing] Total documents: {len(all_docs)}")
+    print(f"  By game: {by_game}")
+
+    # Clean
+    print("  - Cleaning...")
+    cleaned = cleaner.clean_batch(all_docs)
+    print(f"    Cleaned: {len(cleaned)}")
+
+    # Classify
+    print("  - Classifying...")
+    classified = classifier.classify_batch(cleaned)
+
+    # Quality Score
+    print("  - Scoring quality...")
+    scored = quality_scorer.score_batch(classified)
+    scored = [d for d in scored if d.quality_score >= 0.3]
+    print(f"    After quality filter: {len(scored)}")
+
+    # Chunk
+    print("  - Chunking...")
+    chunks = chunker.chunk_batch(scored)
+    print(f"    Chunks created: {len(chunks)}")
+
+    # Embed & Store
+    saved = 0
+    if chunks:
+        print("  - Embedding and storing...")
+        embedded_chunks = list(embedder.embed_batch(chunks, show_progress=False))
+        saved = store.upsert_batch(embedded_chunks)
+        print(f"    ✓ Saved: {saved} chunks")
+
+    return {
+        "source": "common_subreddits",
+        "total_docs": len(all_docs),
+        "chunks": saved,
+        "status": "success" if saved > 0 else "no_chunks",
+        "by_game": by_game
+    }
 
 
 def crawl_game(game_id: str, skip_reddit: bool = False, skip_wiki: bool = False):
@@ -198,34 +289,62 @@ def main():
         action="store_true",
         help="Skip Wiki crawling"
     )
+    parser.add_argument(
+        "--include-common",
+        action="store_true",
+        help="Include common subreddits (r/fromsoftware, r/soulslike, r/shittydarksouls)"
+    )
+    parser.add_argument(
+        "--common-only",
+        action="store_true",
+        help="Only crawl common subreddits"
+    )
     args = parser.parse_args()
-
-    # 게임 목록 결정
-    if "all" in args.games:
-        games = list(GAMES_CONFIG.keys())
-    else:
-        games = args.games
 
     print("=" * 60)
     print("  BossHelp Data Collection")
     print("=" * 60)
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Games: {', '.join(games)}")
-    print(f"Skip Reddit: {args.skip_reddit}")
-    print(f"Skip Wiki: {args.skip_wiki}")
 
     results = []
     total_chunks = 0
 
-    for game_id in games:
-        result = crawl_game(
-            game_id,
-            skip_reddit=args.skip_reddit,
-            skip_wiki=args.skip_wiki
-        )
-        if result:
-            results.append(result)
-            total_chunks += result["chunks"]
+    # 공통 서브레딧만 크롤링
+    if args.common_only:
+        print("Mode: Common subreddits only")
+        common_result = crawl_common_subreddits()
+        if common_result:
+            results.append(common_result)
+            total_chunks += common_result["chunks"]
+    else:
+        # 게임 목록 결정
+        if "all" in args.games:
+            games = list(GAMES_CONFIG.keys())
+        else:
+            games = args.games
+
+        print(f"Games: {', '.join(games)}")
+        print(f"Skip Reddit: {args.skip_reddit}")
+        print(f"Skip Wiki: {args.skip_wiki}")
+        print(f"Include Common: {args.include_common}")
+
+        # 게임별 크롤링
+        for game_id in games:
+            result = crawl_game(
+                game_id,
+                skip_reddit=args.skip_reddit,
+                skip_wiki=args.skip_wiki
+            )
+            if result:
+                results.append(result)
+                total_chunks += result["chunks"]
+
+        # 공통 서브레딧 크롤링 (옵션)
+        if args.include_common:
+            common_result = crawl_common_subreddits()
+            if common_result:
+                results.append(common_result)
+                total_chunks += common_result["chunks"]
 
     # 결과 출력
     print("\n" + "=" * 60)
@@ -234,8 +353,13 @@ def main():
 
     for r in results:
         status = "✓" if r["status"] == "success" else "✗"
-        print(f"{status} {r['game_id']}:")
-        print(f"    Reddit: {r['reddit']}, Wiki: {r['wiki']} → Chunks: {r['chunks']}")
+        if r.get("source") == "common_subreddits":
+            print(f"{status} Common Subreddits:")
+            print(f"    Total: {r['total_docs']} docs → Chunks: {r['chunks']}")
+            print(f"    By game: {r['by_game']}")
+        else:
+            print(f"{status} {r['game_id']}:")
+            print(f"    Reddit: {r['reddit']}, Wiki: {r['wiki']} → Chunks: {r['chunks']}")
 
     print(f"\n{'='*60}")
     print(f"Total chunks saved: {total_chunks}")

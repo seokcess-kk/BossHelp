@@ -11,8 +11,28 @@ import httpx
 from datetime import datetime, timezone
 from typing import Generator
 
-from crawler.config import get_game_config, GameConfig
+from crawler.config import get_game_config, GameConfig, GAME_NAME_MAPPING, COMMON_SUBREDDITS
 from crawler.models import RawDocument, SourceType, CrawlResult
+
+
+def detect_game_from_title(title: str) -> str | None:
+    """제목에서 게임 이름 감지.
+
+    Args:
+        title: Reddit 포스트 제목
+
+    Returns:
+        게임 ID 또는 None (감지 실패 시)
+    """
+    title_lower = title.lower()
+
+    # 긴 매핑부터 검사 (예: "dark souls 3"이 "dark souls"보다 먼저 매칭되도록)
+    sorted_mappings = sorted(GAME_NAME_MAPPING.items(), key=lambda x: -len(x[0]))
+
+    for name, game_id in sorted_mappings:
+        if name in title_lower:
+            return game_id
+    return None
 
 
 class RedditJsonCrawler:
@@ -39,11 +59,11 @@ class RedditJsonCrawler:
         limit: int = 500,
     ) -> Generator[RawDocument, None, CrawlResult]:
         """
-        초기 수집: top all-time posts.
+        초기 수집: top all-time posts (복수 서브레딧 지원).
 
         Args:
             game_id: 게임 ID
-            limit: 최대 수집 개수
+            limit: 최대 수집 개수 (전체 서브레딧 합산)
 
         Yields:
             RawDocument: 수집된 문서
@@ -53,45 +73,24 @@ class RedditJsonCrawler:
         pages_crawled = 0
         error_message = None
 
+        # 각 서브레딧별 수집 개수 분배
+        subreddits = game_config.subreddits
+        per_sub_limit = limit // len(subreddits)
+        # 나머지는 첫 번째 서브레딧에 추가
+        extra = limit % len(subreddits)
+
         try:
-            # Reddit JSON API는 한 번에 최대 100개
-            after = None
-            collected = 0
+            for idx, subreddit in enumerate(subreddits):
+                sub_limit = per_sub_limit + (extra if idx == 0 else 0)
+                print(f"  [Reddit] Crawling r/{subreddit} (limit: {sub_limit})")
 
-            while collected < limit:
-                batch_limit = min(100, limit - collected)
-                url = f"{self.BASE_URL}/r/{game_config.subreddit}/top/.json"
-                params = {
-                    "t": "all",
-                    "limit": batch_limit,
-                }
-                if after:
-                    params["after"] = after
+                sub_collected = 0
+                for doc in self._crawl_subreddit(subreddit, sub_limit, game_config):
+                    pages_crawled += 1
+                    sub_collected += 1
+                    yield doc
 
-                print(f"  [Reddit] Fetching {game_config.subreddit} (collected: {collected})")
-
-                response = self.client.get(url, params=params)
-                response.raise_for_status()
-                data = response.json()
-
-                posts = data.get("data", {}).get("children", [])
-                if not posts:
-                    break
-
-                for post in posts:
-                    post_data = post.get("data", {})
-                    doc = self._process_post(post_data, game_config)
-                    if doc:
-                        pages_crawled += 1
-                        collected += 1
-                        yield doc
-
-                # 다음 페이지
-                after = data.get("data", {}).get("after")
-                if not after:
-                    break
-
-                time.sleep(self.delay)
+                print(f"    → Collected: {sub_collected}")
 
             status = "success"
 
@@ -112,33 +111,173 @@ class RedditJsonCrawler:
             completed_at=datetime.now(timezone.utc),
         )
 
+    def _crawl_subreddit(
+        self,
+        subreddit: str,
+        limit: int,
+        game_config: GameConfig,
+    ) -> Generator[RawDocument, None, None]:
+        """단일 서브레딧에서 top posts 수집."""
+        after = None
+        collected = 0
+
+        while collected < limit:
+            batch_limit = min(100, limit - collected)
+            url = f"{self.BASE_URL}/r/{subreddit}/top/.json"
+            params = {
+                "t": "all",
+                "limit": batch_limit,
+            }
+            if after:
+                params["after"] = after
+
+            response = self.client.get(url, params=params)
+            response.raise_for_status()
+            data = response.json()
+
+            posts = data.get("data", {}).get("children", [])
+            if not posts:
+                break
+
+            for post in posts:
+                post_data = post.get("data", {})
+                doc = self._process_post(post_data, game_config)
+                if doc:
+                    collected += 1
+                    yield doc
+
+            # 다음 페이지
+            after = data.get("data", {}).get("after")
+            if not after:
+                break
+
+            time.sleep(self.delay)
+
+    def crawl_common_subreddit(
+        self,
+        subreddit: str,
+        limit: int = 300,
+    ) -> Generator[RawDocument, None, CrawlResult]:
+        """
+        공통 서브레딧 크롤링 (제목으로 게임 자동 분류).
+
+        r/fromsoftware, r/soulslike, r/shittydarksouls 등에서 수집.
+        제목에서 게임 이름을 감지하여 자동 분류.
+
+        Args:
+            subreddit: 서브레딧 이름
+            limit: 최대 수집 개수
+
+        Yields:
+            RawDocument: 수집된 문서 (game_id 자동 분류됨)
+        """
+        started_at = datetime.now(timezone.utc)
+        pages_crawled = 0
+        classified_count = 0
+        error_message = None
+
+        print(f"  [Reddit Common] Crawling r/{subreddit} (limit: {limit})")
+
+        try:
+            after = None
+            fetched = 0
+
+            while fetched < limit:
+                batch_limit = min(100, limit - fetched)
+                url = f"{self.BASE_URL}/r/{subreddit}/top/.json"
+                params = {
+                    "t": "all",
+                    "limit": batch_limit,
+                }
+                if after:
+                    params["after"] = after
+
+                response = self.client.get(url, params=params)
+                response.raise_for_status()
+                data = response.json()
+
+                posts = data.get("data", {}).get("children", [])
+                if not posts:
+                    break
+
+                for post in posts:
+                    post_data = post.get("data", {})
+                    fetched += 1
+
+                    # 제목에서 게임 감지
+                    title = post_data.get("title", "")
+                    game_id = detect_game_from_title(title)
+
+                    if game_id:
+                        # 감지된 게임의 설정 사용
+                        game_config = get_game_config(game_id)
+                        doc = self._process_post(post_data, game_config)
+                        if doc:
+                            pages_crawled += 1
+                            classified_count += 1
+                            yield doc
+
+                # 다음 페이지
+                after = data.get("data", {}).get("after")
+                if not after:
+                    break
+
+                time.sleep(self.delay)
+
+            print(f"    → Fetched: {fetched}, Classified: {classified_count}")
+            status = "success"
+
+        except httpx.HTTPStatusError as e:
+            error_message = f"HTTP {e.response.status_code}: {e.response.text[:200]}"
+            status = "failed" if pages_crawled == 0 else "partial"
+        except Exception as e:
+            error_message = str(e)
+            status = "failed" if pages_crawled == 0 else "partial"
+
+        return CrawlResult(
+            game_id="common",
+            source_type=SourceType.REDDIT,
+            status=status,
+            pages_crawled=pages_crawled,
+            error_message=error_message,
+            started_at=started_at,
+            completed_at=datetime.now(timezone.utc),
+        )
+
     def crawl_recent(
         self,
         game_id: str,
         limit: int = 100,
     ) -> Generator[RawDocument, None, CrawlResult]:
         """
-        주기적 수집: hot posts.
+        주기적 수집: hot posts (복수 서브레딧 지원).
         """
         game_config = get_game_config(game_id)
         started_at = datetime.now(timezone.utc)
         pages_crawled = 0
         error_message = None
 
+        # 각 서브레딧별 수집 개수 분배
+        subreddits = game_config.subreddits
+        per_sub_limit = limit // len(subreddits)
+
         try:
-            url = f"{self.BASE_URL}/r/{game_config.subreddit}/hot/.json"
-            params = {"limit": min(100, limit)}
+            for subreddit in subreddits:
+                url = f"{self.BASE_URL}/r/{subreddit}/hot/.json"
+                params = {"limit": min(100, per_sub_limit)}
 
-            response = self.client.get(url, params=params)
-            response.raise_for_status()
-            data = response.json()
+                response = self.client.get(url, params=params)
+                response.raise_for_status()
+                data = response.json()
 
-            for post in data.get("data", {}).get("children", []):
-                post_data = post.get("data", {})
-                doc = self._process_post(post_data, game_config)
-                if doc:
-                    pages_crawled += 1
-                    yield doc
+                for post in data.get("data", {}).get("children", []):
+                    post_data = post.get("data", {})
+                    doc = self._process_post(post_data, game_config)
+                    if doc:
+                        pages_crawled += 1
+                        yield doc
+
+                time.sleep(self.delay)
 
             status = "success"
 
