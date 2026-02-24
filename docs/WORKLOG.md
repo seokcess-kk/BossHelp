@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-02-24
+
+### [WL-015] Hollow Knight 추가 데이터 수집
+- **요청**: Gap Analysis에서 확인된 Hollow Knight 데이터 부족 해결
+- **원인**: 기존 811 chunks로 목표(2,000+) 미달 (40%)
+- **수집 내용**:
+  - `crawl_hollow_knight_extra.py`: 전용 크롤러 생성
+  - 수집 카테고리: Bosses(42), Charms(43), Items(35), NPCs(49), Enemies(50), Spells(28), Nail Arts(12), Locations(40), Lore(44) 등
+  - 총 352 페이지 → **942 chunks 추가**
+- **결과**:
+  - 기존: 811 chunks
+  - 추가: 942 chunks
+  - 최종: **1,753 chunks** (목표 대비 87%)
+- **Match Rate**: 96% → **98%** 향상
+- **상태**: ✅ 완료
+
+---
+
 ## 2026-02-23
 
 ### [WL-014] 보스/아이템 추가 데이터 수집 및 RAG 검증

@@ -6,8 +6,8 @@
     "level": "Starter"
   },
   "currentFeature": "remaining-games-data",
-  "phase": "do",
-  "matchRate": null,
+  "phase": "check",
+  "matchRate": 98,
   "phaseHistory": [
     {
       "phase": "plan",
@@ -18,6 +18,12 @@
       "phase": "do",
       "timestamp": "2026-02-23T11:40:00.000Z",
       "note": "크롤링 완료: 31,061 chunks"
+    },
+    {
+      "phase": "check",
+      "timestamp": "2026-02-24T01:00:00.000Z",
+      "document": "docs/03-analysis/remaining-games-data.analysis.md",
+      "matchRate": 96
     }
   ]
 }
