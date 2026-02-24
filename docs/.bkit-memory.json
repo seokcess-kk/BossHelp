@@ -6,7 +6,7 @@
     "level": "Starter"
   },
   "currentFeature": "remaining-games-data",
-  "phase": "check",
+  "phase": "completed",
   "matchRate": 98,
   "phaseHistory": [
     {
@@ -24,6 +24,17 @@
       "timestamp": "2026-02-24T01:00:00.000Z",
       "document": "docs/03-analysis/remaining-games-data.analysis.md",
       "matchRate": 96
+    },
+    {
+      "phase": "act",
+      "timestamp": "2026-02-24T01:30:00.000Z",
+      "note": "Hollow Knight 추가 수집: +942 chunks",
+      "matchRate": 98
+    },
+    {
+      "phase": "completed",
+      "timestamp": "2026-02-24T02:00:00.000Z",
+      "document": "docs/04-report/features/remaining-games-data.report.md"
     }
   ]
 }
