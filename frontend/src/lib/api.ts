@@ -59,6 +59,74 @@ class ApiClient {
     });
   }
 
+  // Streaming Chat
+  async askStream(
+    request: AskRequest,
+    callbacks: {
+      onText: (text: string) => void;
+      onSources: (sources: AskResponse['sources']) => void;
+      onMeta: (meta: { confidence?: string; latency_ms?: number }) => void;
+      onDone: () => void;
+      onError: (error: string) => void;
+    },
+  ): Promise<void> {
+    const response = await fetch(`${this.baseUrl}/api/v1/ask/stream`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(error.error || `HTTP ${response.status}`);
+    }
+
+    const reader = response.body?.getReader();
+    const decoder = new TextDecoder();
+
+    if (!reader) {
+      throw new Error('Response body is not readable');
+    }
+
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            switch (data.type) {
+              case 'text':
+                callbacks.onText(data.data);
+                break;
+              case 'sources':
+                callbacks.onSources(data.data);
+                break;
+              case 'meta':
+                callbacks.onMeta(data.data);
+                break;
+              case 'done':
+                callbacks.onDone();
+                break;
+              case 'error':
+                callbacks.onError(data.message);
+                break;
+            }
+          } catch {
+            // Ignore parse errors for incomplete JSON
+          }
+        }
+      }
+    }
+  }
+
   // Feedback
   async submitFeedback(request: FeedbackRequest): Promise<{ success: boolean }> {
     return this.request('/api/v1/feedback', {

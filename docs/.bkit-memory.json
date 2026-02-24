@@ -6,8 +6,8 @@
     "level": "Starter"
   },
   "currentFeature": "answer-optimization",
-  "phase": "plan",
-  "matchRate": 98,
+  "phase": "completed",
+  "matchRate": 92,
   "phaseHistory": [
     {
       "phase": "plan",

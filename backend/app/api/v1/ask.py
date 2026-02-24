@@ -64,4 +64,6 @@ async def _ask_with_rag(request: AskRequest) -> AskResponse:
         has_detail=result.has_detail,
         is_early_data=result.is_early_data,
         latency_ms=result.latency_ms,
+        confidence=result.confidence,
+        cached=result.cached,
     )

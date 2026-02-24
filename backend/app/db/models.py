@@ -5,6 +5,7 @@ from datetime import datetime
 
 # ==================== Enums ====================
 SpoilerLevel = Literal["none", "light", "heavy"]
+ConfidenceLevel = Literal["high", "medium", "low"]
 Category = Literal[
     "boss_guide",
     "build_guide",
@@ -48,6 +49,8 @@ class AskResponse(BaseModel):
     has_detail: bool
     is_early_data: bool = False
     latency_ms: int
+    confidence: ConfidenceLevel = "medium"
+    cached: bool = False
 
 
 class Game(BaseModel):

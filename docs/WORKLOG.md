@@ -6,6 +6,34 @@
 
 ## 2026-02-24
 
+### [WL-016] RAG 답변 최적화 구현 (answer-optimization)
+- **요청**: RAG 파이프라인 답변 품질 향상 및 응답 속도 개선
+- **구현 내용**:
+  - **Phase 1: 스트리밍 응답 (SSE)**
+    - `backend/app/api/v1/ask_stream.py`: SSE 스트리밍 엔드포인트
+    - `backend/app/core/rag/pipeline.py`: `run_stream()`, `prepare_context()` 메서드 추가
+    - `frontend/src/lib/api.ts`: `askStream()` 함수 추가
+  - **Phase 2: 프롬프트 최적화**
+    - `backend/app/core/rag/prompt.py`: `SYSTEM_PROMPT_V2` (환각 방지 강화)
+    - 신뢰도 등급 시스템 (`high`, `medium`, `low`)
+    - 답변 구조화 템플릿 (핵심→상세→출처)
+  - **Phase 3: 캐싱 시스템**
+    - `backend/app/core/cache/query_cache.py`: TTL 기반 쿼리 결과 캐싱
+    - `backend/app/core/cache/embedding_cache.py`: LRU 임베딩 캐싱
+  - **Phase 4: 다단계 리랭킹**
+    - `backend/app/core/rag/reranker.py`: `MultiStageReranker` 클래스
+    - 질문 유형 감지 및 카테고리 부스트
+    - 키워드 부스트, 품질 필터, 중복 제거
+- **API 변경**:
+  - `POST /api/v1/ask/stream`: SSE 스트리밍 엔드포인트 추가
+  - AskResponse에 `confidence`, `cached` 필드 추가
+- **의존성 추가**: `cachetools==5.3.0`
+- **목표 지표**:
+  - 평균 응답 시간: ~3000ms → <2000ms
+  - 첫 토큰 시간: ~3000ms → <1000ms (스트리밍)
+  - 캐시 적중 응답: <100ms
+- **상태**: ✅ 완료 (PDCA Report 생성)
+
 ### [WL-015] Hollow Knight 추가 데이터 수집
 - **요청**: Gap Analysis에서 확인된 Hollow Knight 데이터 부족 해결
 - **원인**: 기존 811 chunks로 목표(2,000+) 미달 (40%)
@@ -207,4 +235,4 @@
 
 ---
 
-Last updated: 2026-02-23
+Last updated: 2026-02-24
