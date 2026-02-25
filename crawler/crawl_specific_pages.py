@@ -121,6 +121,120 @@ SEKIRO_PAGES = {
     ],
 }
 
+# Dark Souls Remastered
+DARK_SOULS_PAGES = {
+    "bosses": [
+        "https://darksouls.wiki.fextralife.com/Ornstein+and+Smough",
+        "https://darksouls.wiki.fextralife.com/Artorias+of+the+Abyss",
+        "https://darksouls.wiki.fextralife.com/Manus+Father+of+the+Abyss",
+        "https://darksouls.wiki.fextralife.com/Black+Dragon+Kalameet",
+        "https://darksouls.wiki.fextralife.com/Gwyn+Lord+of+Cinder",
+        "https://darksouls.wiki.fextralife.com/Great+Grey+Wolf+Sif",
+        "https://darksouls.wiki.fextralife.com/Four+Kings",
+        "https://darksouls.wiki.fextralife.com/Gravelord+Nito",
+        "https://darksouls.wiki.fextralife.com/Seath+the+Scaleless",
+        "https://darksouls.wiki.fextralife.com/Bed+of+Chaos",
+        "https://darksouls.wiki.fextralife.com/Capra+Demon",
+        "https://darksouls.wiki.fextralife.com/Chaos+Witch+Quelaag",
+        "https://darksouls.wiki.fextralife.com/Bell+Gargoyles",
+        "https://darksouls.wiki.fextralife.com/Sanctuary+Guardian",
+    ],
+}
+
+# Dark Souls 2: Scholar of the First Sin
+DARK_SOULS_2_PAGES = {
+    "bosses": [
+        "https://darksouls2.wiki.fextralife.com/Fume+Knight",
+        "https://darksouls2.wiki.fextralife.com/Sir+Alonne",
+        "https://darksouls2.wiki.fextralife.com/Burnt+Ivory+King",
+        "https://darksouls2.wiki.fextralife.com/Sinh,+the+Slumbering+Dragon",
+        "https://darksouls2.wiki.fextralife.com/Darklurker",
+        "https://darksouls2.wiki.fextralife.com/Velstadt,+the+Royal+Aegis",
+        "https://darksouls2.wiki.fextralife.com/Looking+Glass+Knight",
+        "https://darksouls2.wiki.fextralife.com/The+Lost+Sinner",
+        "https://darksouls2.wiki.fextralife.com/Smelter+Demon",
+        "https://darksouls2.wiki.fextralife.com/Ancient+Dragon",
+        "https://darksouls2.wiki.fextralife.com/Vendrick",
+        "https://darksouls2.wiki.fextralife.com/Nashandra",
+        "https://darksouls2.wiki.fextralife.com/Throne+Watcher+and+Defender",
+        "https://darksouls2.wiki.fextralife.com/Pursuer",
+    ],
+}
+
+# Lies of P
+LIES_OF_P_PAGES = {
+    "bosses": [
+        "https://liesofp.wiki.fextralife.com/Parade+Master",
+        "https://liesofp.wiki.fextralife.com/Scrapped+Watchman",
+        "https://liesofp.wiki.fextralife.com/King's+Flame,+Fuoco",
+        "https://liesofp.wiki.fextralife.com/Fallen+Archbishop+Andreus",
+        "https://liesofp.wiki.fextralife.com/King+of+Puppets",
+        "https://liesofp.wiki.fextralife.com/Champion+Victor",
+        "https://liesofp.wiki.fextralife.com/Laxasia+the+Complete",
+        "https://liesofp.wiki.fextralife.com/Simon+Manus,+Awakened+God",
+        "https://liesofp.wiki.fextralife.com/Nameless+Puppet",
+        "https://liesofp.wiki.fextralife.com/Black+Rabbit+Brotherhood",
+        "https://liesofp.wiki.fextralife.com/Romeo,+King+of+Puppets",
+        "https://liesofp.wiki.fextralife.com/Green+Monster+of+the+Swamp",
+        "https://liesofp.wiki.fextralife.com/Walker+of+Illusions",
+    ],
+}
+
+# Hollow Knight
+HOLLOW_KNIGHT_PAGES = {
+    "bosses": [
+        "https://hollowknight.wiki.fextralife.com/Hornet",
+        "https://hollowknight.wiki.fextralife.com/Mantis+Lords",
+        "https://hollowknight.wiki.fextralife.com/Soul+Master",
+        "https://hollowknight.wiki.fextralife.com/Dung+Defender",
+        "https://hollowknight.wiki.fextralife.com/Broken+Vessel",
+        "https://hollowknight.wiki.fextralife.com/Watcher+Knights",
+        "https://hollowknight.wiki.fextralife.com/Grimm",
+        "https://hollowknight.wiki.fextralife.com/Nightmare+King+Grimm",
+        "https://hollowknight.wiki.fextralife.com/The+Hollow+Knight",
+        "https://hollowknight.wiki.fextralife.com/The+Radiance",
+        "https://hollowknight.wiki.fextralife.com/Pure+Vessel",
+        "https://hollowknight.wiki.fextralife.com/Absolute+Radiance",
+        "https://hollowknight.wiki.fextralife.com/Traitor+Lord",
+        "https://hollowknight.wiki.fextralife.com/Nosk",
+        "https://hollowknight.wiki.fextralife.com/Grey+Prince+Zote",
+    ],
+}
+
+# Hollow Knight: Silksong
+SILKSONG_PAGES = {
+    "bosses": [
+        # 주요 스토리 보스
+        "https://hollowknightsilksong.wiki.fextralife.com/Lace",
+        "https://hollowknightsilksong.wiki.fextralife.com/Lost+Lace",
+        "https://hollowknightsilksong.wiki.fextralife.com/Moss+Mother",
+        "https://hollowknightsilksong.wiki.fextralife.com/Lost+Moss+Mother",
+        "https://hollowknightsilksong.wiki.fextralife.com/Bell+Beast",
+        "https://hollowknightsilksong.wiki.fextralife.com/Shakra+(Boss)",
+        "https://hollowknightsilksong.wiki.fextralife.com/Seth",
+        "https://hollowknightsilksong.wiki.fextralife.com/Pinstress+(Boss)",
+        "https://hollowknightsilksong.wiki.fextralife.com/Sister+Splinter",
+        "https://hollowknightsilksong.wiki.fextralife.com/Grand+Mother+Silk",
+        # 중요 보스
+        "https://hollowknightsilksong.wiki.fextralife.com/Father+of+the+Flame",
+        "https://hollowknightsilksong.wiki.fextralife.com/Skull+Tyrant",
+        "https://hollowknightsilksong.wiki.fextralife.com/Last+Judge",
+        "https://hollowknightsilksong.wiki.fextralife.com/First+Sinner",
+        "https://hollowknightsilksong.wiki.fextralife.com/The+Unravelled",
+        "https://hollowknightsilksong.wiki.fextralife.com/Summoned+Saviour",
+        "https://hollowknightsilksong.wiki.fextralife.com/Nyleth",
+        "https://hollowknightsilksong.wiki.fextralife.com/Voltvyrm",
+        # 기타 주요 보스
+        "https://hollowknightsilksong.wiki.fextralife.com/Groal+The+Great",
+        "https://hollowknightsilksong.wiki.fextralife.com/Crust+King+Khann",
+        "https://hollowknightsilksong.wiki.fextralife.com/Widow",
+        "https://hollowknightsilksong.wiki.fextralife.com/Trobbio+(Boss)",
+        "https://hollowknightsilksong.wiki.fextralife.com/Tormented+Trobbio",
+        "https://hollowknightsilksong.wiki.fextralife.com/Garmond+and+Zaza+(Boss)",
+        "https://hollowknightsilksong.wiki.fextralife.com/Lost+Garmond",
+    ],
+}
+
 
 class DirectPageCrawler:
     """직접 URL 크롤러."""
@@ -226,6 +340,11 @@ def main():
         ("elden-ring", ELDEN_RING_PAGES),
         ("dark-souls-3", DARK_SOULS_3_PAGES),
         ("sekiro", SEKIRO_PAGES),
+        ("dark-souls", DARK_SOULS_PAGES),
+        ("dark-souls-2", DARK_SOULS_2_PAGES),
+        ("lies-of-p", LIES_OF_P_PAGES),
+        ("hollow-knight", HOLLOW_KNIGHT_PAGES),
+        ("silksong", SILKSONG_PAGES),
     ]
 
     total_chunks = 0
