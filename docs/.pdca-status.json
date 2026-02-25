@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-24T01:23:35.694Z",
+  "lastUpdated": "2026-02-24T09:04:00.058Z",
   "activeFeatures": [
     "bosshelp-mvp",
     "frontend",
@@ -22,7 +22,8 @@
     "crawlers",
     "processors",
     "admin",
-    "scripts"
+    "scripts",
+    "cache"
   ],
   "primaryFeature": "bosshelp-mvp",
   "features": {
@@ -52,9 +53,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:17:38.042Z",
-        "lastUpdated": "2026-02-23T07:35:48.277Z"
+        "lastUpdated": "2026-02-24T06:40:18.284Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\app\\page.tsx"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\frontend\\src\\lib\\api.ts"
     },
     "stores": {
       "phase": "do",
@@ -156,7 +157,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:24:27.350Z",
-        "lastUpdated": "2026-02-14T16:25:01.453Z"
+        "lastUpdated": "2026-02-24T06:39:35.085Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\db\\models.py"
     },
@@ -182,7 +183,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:25:18.769Z",
-        "lastUpdated": "2026-02-23T08:53:31.478Z"
+        "lastUpdated": "2026-02-24T06:39:49.348Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\api\\v1\\ask.py"
     },
@@ -208,9 +209,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:35:46.816Z",
-        "lastUpdated": "2026-02-23T12:22:30.342Z"
+        "lastUpdated": "2026-02-24T06:39:00.724Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\retriever.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\pipeline.py"
     },
     "llm": {
       "phase": "do",
@@ -247,9 +248,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:48:42.931Z",
-        "lastUpdated": "2026-02-24T01:23:35.694Z"
+        "lastUpdated": "2026-02-24T09:04:00.058Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawl_hollow_knight_extra.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawl_remaining_games.py"
     },
     "crawlers": {
       "phase": "do",
@@ -260,9 +261,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:49:03.045Z",
-        "lastUpdated": "2026-02-23T05:10:09.653Z"
+        "lastUpdated": "2026-02-24T09:02:27.613Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawlers\\wiki.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawlers\\reddit_json.py"
     },
     "processors": {
       "phase": "do",
@@ -302,6 +303,19 @@
         "lastUpdated": "2026-02-23T03:46:21.310Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\scripts\\run_migration.py"
+    },
+    "cache": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-24T06:36:39.772Z",
+        "lastUpdated": "2026-02-24T06:36:43.213Z"
+      },
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\cache\\embedding_cache.py"
     }
   },
   "pipeline": {
@@ -325,7 +339,7 @@
   "session": {
     "startedAt": "2026-02-14T16:02:30.113Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-24T01:23:35.694Z"
+    "lastActivity": "2026-02-24T09:04:00.058Z"
   },
   "history": [
     {
@@ -1294,6 +1308,174 @@
     },
     {
       "timestamp": "2026-02-24T01:23:35.694Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:36:39.772Z",
+      "feature": "cache",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:36:41.513Z",
+      "feature": "cache",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:36:43.213Z",
+      "feature": "cache",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:37:27.438Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:38:05.253Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:38:23.660Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:39:00.724Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:39:14.379Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:39:28.040Z",
+      "feature": "db",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:39:35.085Z",
+      "feature": "db",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:39:49.348Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T06:40:18.284Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:54:30.224Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:54:52.541Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:55:02.021Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:55:29.772Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:55:41.813Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:55:55.105Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:56:15.285Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T07:56:36.188Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T08:50:09.636Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T08:50:23.326Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T08:50:30.739Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T09:01:45.871Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T09:02:27.613Z",
+      "feature": "crawlers",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T09:02:45.394Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T09:03:27.863Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-24T09:04:00.058Z",
       "feature": "crawler",
       "phase": "do",
       "action": "updated"
