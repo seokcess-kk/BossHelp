@@ -75,7 +75,31 @@ Rules:
             return response.content[0].text.strip()
         except Exception as e:
             logger.error(f"Translation failed: {e}")
-            # 번역 실패 시 원본 반환
+            # 폴백: 엔티티 사전으로 한글 → 영어 치환
+            return self._fallback_with_dictionary(question, game_id)
+
+    def _fallback_with_dictionary(self, question: str, game_id: str) -> str:
+        """엔티티 사전 기반 폴백 번역.
+
+        Haiku 번역 실패 시 엔티티 사전을 사용하여
+        알려진 게임 용어만이라도 영어로 변환.
+
+        Args:
+            question: 원본 한글 질문
+            game_id: 게임 ID
+
+        Returns:
+            부분 번역된 질문 (엔티티만 영어로 변환)
+        """
+        try:
+            from app.core.entity.dictionary import get_entity_dictionary
+            entity_dict = get_entity_dictionary(game_id, auto_expand=False)
+            translated = entity_dict.translate_to_english(question)
+            if translated != question:
+                logger.info(f"Fallback translation applied: '{question[:30]}' -> '{translated[:50]}'")
+            return translated
+        except Exception as e:
+            logger.error(f"Fallback translation also failed: {e}")
             return question
 
     def _contains_korean(self, text: str) -> bool:

@@ -1,9 +1,17 @@
 """Vector Retriever for BossHelp RAG."""
 
-import json
+import re
 from supabase import Client
 from functools import lru_cache
 from app.db.supabase import get_supabase_client
+
+# 게임 특화 용어 (검색 키워드로 중요)
+GAME_TERMS = {
+    "phase", "build", "dodge", "parry", "roll", "guard", "counter",
+    "attack", "combo", "pattern", "strategy", "guide", "weakness",
+    "buff", "debuff", "status", "damage", "heal", "stamina", "posture",
+    "weapon", "armor", "item", "spell", "skill", "ability",
+}
 
 
 class VectorRetriever:
@@ -42,23 +50,9 @@ class VectorRetriever:
         # Build RPC call for vector search
         # This requires a Supabase function: search_chunks
         try:
-            # 쿼리에서 핵심 키워드 추출 (대문자 단어 우선, 없으면 가장 긴 단어)
-            search_keyword = None
-            if query:
-                # 구두점 제거
-                import re
-                clean_query = re.sub(r'[^\w\s]', '', query)
-                words = [w for w in clean_query.split() if len(w) >= 3]
-                # 대문자로 시작하는 단어 우선 (엔티티 이름일 가능성 높음)
-                stop_words = {"How", "What", "Where", "When", "Why", "Can", "Does", "The", "This", "Are", "Could", "Would", "Should"}
-                capitalized = [w for w in words if w[0].isupper() and w not in stop_words]
-                if capitalized:
-                    search_keyword = max(capitalized, key=len)
-                elif words:
-                    # stop words 제외하고 가장 긴 단어
-                    non_stop = [w for w in words if w not in stop_words]
-                    if non_stop:
-                        search_keyword = max(non_stop, key=len)
+            # 다중 키워드 추출
+            search_keywords = self._extract_search_keywords(query)
+            search_keyword = search_keywords[0] if search_keywords else None
 
             print(f"[Retriever] RPC call: game={game_id}, spoiler_levels={spoiler_levels}, search_text={search_keyword}")
 
@@ -105,6 +99,68 @@ class VectorRetriever:
                 embedding, game_id, spoiler_levels, category, limit
             )
 
+    def _extract_search_keywords(self, query: str) -> list[str]:
+        """쿼리에서 복수 검색 키워드 추출.
+
+        추출 우선순위:
+        1. 대문자로 시작하는 단어 (엔티티명)
+        2. 숫자 포함 단어 (phase 2, 1st floor 등)
+        3. 게임 특화 용어 (build, dodge, parry 등)
+
+        Args:
+            query: 검색 쿼리
+
+        Returns:
+            검색 키워드 리스트 (중요도 순)
+        """
+        if not query:
+            return []
+
+        # 구두점 제거 (하이픈은 유지)
+        clean_query = re.sub(r'[^\w\s\-]', '', query)
+        words = clean_query.split()
+
+        # Stop words (의문사, 관사 등)
+        stop_words = {
+            "how", "what", "where", "when", "why", "can", "does", "do",
+            "the", "this", "that", "are", "is", "could", "would", "should",
+            "for", "with", "and", "or", "but", "in", "on", "at", "to",
+            "a", "an", "i", "my", "me", "best", "good", "way",
+        }
+
+        keywords = []
+
+        # 1. 대문자로 시작하는 단어 (엔티티명 가능성 높음)
+        for word in words:
+            if len(word) >= 2 and word[0].isupper() and word.lower() not in stop_words:
+                keywords.append(word)
+
+        # 2. 숫자 포함 단어 (phase 2, 1st 등)
+        for word in words:
+            if any(c.isdigit() for c in word) and len(word) >= 2:
+                if word not in keywords:
+                    keywords.append(word)
+
+        # 숫자 + 단어 조합 패턴 (예: "phase 2", "stage 1")
+        phase_pattern = re.findall(r'(phase|stage|floor|level|part)\s*(\d+)', query, re.IGNORECASE)
+        for match in phase_pattern:
+            combined = f"{match[0]} {match[1]}"
+            if combined not in keywords:
+                keywords.append(combined)
+
+        # 3. 게임 특화 용어
+        for word in words:
+            word_lower = word.lower()
+            if word_lower in GAME_TERMS and word not in keywords:
+                keywords.append(word)
+
+        # 4. 나머지 의미 있는 단어 (3글자 이상, stop word 제외)
+        for word in words:
+            if len(word) >= 3 and word.lower() not in stop_words and word not in keywords:
+                keywords.append(word)
+
+        return keywords[:5]  # 최대 5개 키워드 반환
+
     def _get_allowed_spoiler_levels(self, spoiler_level: str) -> list[str]:
         """Get list of allowed spoiler levels."""
         levels = {
@@ -116,8 +172,8 @@ class VectorRetriever:
 
     def _boost_by_keywords(self, chunks: list[dict], query: str) -> list[dict]:
         """키워드 매칭으로 관련 청크 우선순위 부여."""
-        # 쿼리에서 키워드 추출 (2글자 이상)
-        keywords = [w.lower() for w in query.split() if len(w) >= 2]
+        # 다중 키워드 추출 (중요도 순)
+        keywords = [kw.lower() for kw in self._extract_search_keywords(query)]
         print(f"[Retriever] Boosting by keywords: {keywords}")
 
         for chunk in chunks:

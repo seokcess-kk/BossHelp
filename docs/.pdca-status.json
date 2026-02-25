@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-24T09:04:00.058Z",
+  "lastUpdated": "2026-02-25T07:01:14.537Z",
   "activeFeatures": [
     "bosshelp-mvp",
     "frontend",
@@ -23,7 +23,8 @@
     "processors",
     "admin",
     "scripts",
-    "cache"
+    "cache",
+    "tests"
   ],
   "primaryFeature": "bosshelp-mvp",
   "features": {
@@ -209,9 +210,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:35:46.816Z",
-        "lastUpdated": "2026-02-24T06:39:00.724Z"
+        "lastUpdated": "2026-02-25T06:50:45.225Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\pipeline.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\translator.py"
     },
     "llm": {
       "phase": "do",
@@ -235,7 +236,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:36:08.038Z",
-        "lastUpdated": "2026-02-23T03:43:46.951Z"
+        "lastUpdated": "2026-02-25T06:48:43.679Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\entity\\dictionary.py"
     },
@@ -248,9 +249,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:48:42.931Z",
-        "lastUpdated": "2026-02-24T09:04:00.058Z"
+        "lastUpdated": "2026-02-25T05:28:53.261Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawl_remaining_games.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawl_specific_pages.py"
     },
     "crawlers": {
       "phase": "do",
@@ -316,6 +317,36 @@
         "lastUpdated": "2026-02-24T06:36:43.213Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\cache\\embedding_cache.py"
+    },
+    "rag-improvement": {
+      "name": "RAG 파이프라인 개선",
+      "description": "기존 Vector RAG 파이프라인 품질 향상 (+10% 정확도)",
+      "phase": "completed",
+      "status": "completed",
+      "matchRate": 93.75,
+      "iterationCount": 1,
+      "documents": {
+        "plan": "docs/01-plan/features/rag-improvement.plan.md",
+        "design": "docs/02-design/features/rag-improvement.design.md",
+        "analysis": "docs/03-analysis/rag-improvement.analysis.md",
+        "report": "docs/04-report/features/rag-improvement.report.md"
+      },
+      "createdAt": "2026-02-25T05:45:00.000Z",
+      "updatedAt": "2026-02-25T07:30:00.000Z",
+      "completedAt": "2026-02-25T07:30:00.000Z"
+    },
+    "tests": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-25T07:01:12.251Z",
+        "lastUpdated": "2026-02-25T07:01:14.537Z"
+      },
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\tests\\test_rag_improvement.py"
     }
   },
   "pipeline": {
@@ -339,7 +370,7 @@
   "session": {
     "startedAt": "2026-02-14T16:02:30.113Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-24T09:04:00.058Z"
+    "lastActivity": "2026-02-25T07:01:14.537Z"
   },
   "history": [
     {
@@ -1477,6 +1508,102 @@
     {
       "timestamp": "2026-02-24T09:04:00.058Z",
       "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T05:15:35.687Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T05:15:44.099Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T05:28:44.911Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T05:28:53.261Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:47:06.659Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:48:37.491Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:48:43.679Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:49:01.768Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:49:14.253Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:49:31.269Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:49:39.444Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:50:06.601Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:50:23.145Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T06:50:45.225Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:01:12.251Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:01:14.537Z",
+      "feature": "tests",
       "phase": "do",
       "action": "updated"
     }

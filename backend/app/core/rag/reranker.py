@@ -94,6 +94,43 @@ class QualityReranker:
 
         return unique_chunks
 
+    def ensure_source_diversity(
+        self,
+        chunks: list[dict],
+        max_per_source: int = 2,
+    ) -> list[dict]:
+        """
+        출처별 청크 수 제한으로 다양한 관점 보장.
+
+        같은 URL에서 max_per_source개 이상의 청크가 선택되지 않도록 제한.
+        점수가 높은 청크 우선 유지.
+
+        Args:
+            chunks: 정렬된 청크 리스트 (점수 높은 순)
+            max_per_source: 출처당 최대 청크 수 (기본값: 2)
+
+        Returns:
+            출처 다양성이 보장된 청크 리스트
+        """
+        if not chunks:
+            return []
+
+        source_counts: dict[str, int] = {}
+        diverse_chunks: list[dict] = []
+
+        for chunk in chunks:
+            # URL에서 도메인+경로 추출 (쿼리 파라미터 제외)
+            source_url = chunk.get("source_url", "")
+            # URL의 기본 경로만 사용 (fragment, query 제외)
+            source_key = source_url.split("?")[0].split("#")[0] if source_url else ""
+
+            current_count = source_counts.get(source_key, 0)
+            if current_count < max_per_source:
+                diverse_chunks.append(chunk)
+                source_counts[source_key] = current_count + 1
+
+        return diverse_chunks
+
     @staticmethod
     def _calculate_overlap(text1: str, text2: str) -> float:
         """Calculate word overlap ratio between two texts."""
@@ -277,6 +314,7 @@ class MultiStageReranker(QualityReranker):
         keywords: list[str] | None = None,
         top_k: int = 5,
         min_quality: float = 0.4,
+        max_per_source: int = 2,
     ) -> list[dict]:
         """
         Multi-stage reranking pipeline.
@@ -287,7 +325,8 @@ class MultiStageReranker(QualityReranker):
         Stage 4: Category boost
         Stage 5: Quality filter
         Stage 6: Deduplication
-        Stage 7: Final ranking
+        Stage 7: Source diversity
+        Stage 8: Final ranking
 
         Args:
             chunks: List of chunks to rerank
@@ -296,6 +335,7 @@ class MultiStageReranker(QualityReranker):
             keywords: Optional keywords for boost
             top_k: Number of top chunks to return
             min_quality: Minimum quality score threshold
+            max_per_source: 출처당 최대 청크 수 (기본값: 2)
 
         Returns:
             Reranked list of chunks
@@ -328,7 +368,10 @@ class MultiStageReranker(QualityReranker):
         # Stage 6: Deduplication
         chunks = self.deduplicate(chunks)
 
-        # Stage 7: Final ranking (already sorted, just slice)
+        # Stage 7: Source diversity (같은 출처에서 max_per_source개까지만)
+        chunks = self.ensure_source_diversity(chunks, max_per_source=max_per_source)
+
+        # Stage 8: Final ranking (already sorted, just slice)
         return chunks[:top_k]
 
 

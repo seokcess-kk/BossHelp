@@ -252,10 +252,25 @@ ENTITY_DICTS: dict[str, dict[str, str]] = {
 class EntityDictionary:
     """Korean-English entity mapping for game terms."""
 
-    def __init__(self, game_id: str):
+    def __init__(self, game_id: str, auto_expand: bool = True):
         self.game_id = game_id
-        self.ko_to_en = ENTITY_DICTS.get(game_id, {})
+        self.ko_to_en = dict(ENTITY_DICTS.get(game_id, {}))  # 복사본 생성
+
+        if auto_expand:
+            self._expand_with_auto_entities()
+
         self.en_to_ko = {v: k for k, v in self.ko_to_en.items()}
+
+    def _expand_with_auto_entities(self):
+        """자동 추출 엔티티로 사전 확장."""
+        try:
+            from app.core.entity.auto_extractor import get_entity_extractor
+            extractor = get_entity_extractor()
+            auto_entities = extractor.extract_from_game(self.game_id)
+            self.ko_to_en = extractor.merge_with_manual_dict(auto_entities, self.ko_to_en)
+        except Exception:
+            # 자동 확장 실패 시 수동 사전만 사용
+            pass
 
     def translate_to_english(self, text: str) -> str:
         """Replace Korean entities with English equivalents."""
@@ -307,6 +322,14 @@ class EntityDictionary:
 
 
 @lru_cache()
-def get_entity_dictionary(game_id: str) -> EntityDictionary:
-    """Get EntityDictionary for a game."""
-    return EntityDictionary(game_id)
+def get_entity_dictionary(game_id: str, auto_expand: bool = True) -> EntityDictionary:
+    """Get EntityDictionary for a game.
+
+    Args:
+        game_id: 게임 ID
+        auto_expand: True면 청크에서 자동 추출된 엔티티로 사전 확장
+
+    Returns:
+        EntityDictionary 인스턴스
+    """
+    return EntityDictionary(game_id, auto_expand=auto_expand)
