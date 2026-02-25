@@ -54,12 +54,22 @@ class QueryTranslator:
 
     def _translate_with_haiku(self, question: str, game_id: str) -> str:
         """Claude Haiku로 번역 (빠르고 저렴)."""
-        # 게임 이름 포맷팅 (dark-souls-3 -> Dark Souls 3)
+        # 1. 먼저 엔티티 사전으로 게임 용어 선처리
+        from app.core.entity.dictionary import get_entity_dictionary
+        entity_dict = get_entity_dictionary(game_id, auto_expand=False)
+        pre_translated = entity_dict.translate_to_english(question)
+
+        # 2. 선처리 후 한글이 없으면 바로 반환
+        if not self._contains_korean(pre_translated):
+            logger.info(f"Entity dict translation: '{question[:30]}' -> '{pre_translated[:50]}'")
+            return pre_translated
+
+        # 3. 나머지 한글은 Haiku로 번역
         game_name = game_id.replace("-", " ").title()
 
         prompt = f"""Translate this gaming question to English.
 Game: {game_name}
-Question: {question}
+Question: {pre_translated}
 
 Rules:
 - Keep game-specific terms (boss names, item names, location names) in their original English form
@@ -75,8 +85,8 @@ Rules:
             return response.content[0].text.strip()
         except Exception as e:
             logger.error(f"Translation failed: {e}")
-            # 폴백: 엔티티 사전으로 한글 → 영어 치환
-            return self._fallback_with_dictionary(question, game_id)
+            # 폴백: 선처리된 결과라도 반환
+            return pre_translated
 
     def _fallback_with_dictionary(self, question: str, game_id: str) -> str:
         """엔티티 사전 기반 폴백 번역.

@@ -100,6 +100,8 @@ ENTITY_DICTS: dict[str, dict[str, str]] = {
         "영혼": "Soul",
         "마스크": "Mask",
         "참": "Charm",
+        "참 추천": "Charm recommendation",
+        "부적": "Charm",
         "지오": "Geo",
         "창백한 광석": "Pale Ore",
         # Locations
