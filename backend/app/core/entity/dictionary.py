@@ -13,6 +13,8 @@ ENTITY_DICTS: dict[str, dict[str, str]] = {
         "마르기트": "Margit",
         "고드릭": "Godrick",
         "라단": "Radahn",
+        "라단 페스티벌": "Starscourge Radahn",  # 라단 페스티벌 → 보스 가이드로 연결
+        "별의 후예 라단": "Starscourge Radahn",
         "모르곳": "Morgott",
         "모르고트": "Morgott",
         "모그": "Mohg",
@@ -43,6 +45,8 @@ ENTITY_DICTS: dict[str, dict[str, str]] = {
         "림그레이브": "Limgrave",
         "리에니에": "Liurnia",
         "케일리드": "Caelid",
+        "레드메인 성": "Redmane Castle",
+        "레드메인": "Redmane Castle",
         "알투스 고원": "Altus Plateau",
         "왕도 레인델": "Leyndell",
         "설원": "Mountaintops",

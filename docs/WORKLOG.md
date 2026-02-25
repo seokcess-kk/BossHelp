@@ -4,6 +4,28 @@
 
 ---
 
+## 2026-02-25
+
+### [WL-018] "라단 페스티벌" 검색 결과 개선
+- **요청**: "라단 페스티벌 공략" 질문 시 Builds 페이지가 반환되는 문제 해결
+- **원인 분석**:
+  - "Starscourge Radahn" 페이지 청크 20개 존재 ✅
+  - 해당 청크에 "festival" 키워드 없음 ❌
+  - 엔티티 사전에 "페스티벌" 관련 항목 없음 ❌
+  - "festival" 키워드가 있는 Builds 페이지가 반환됨
+- **수정 내용**:
+  - `backend/app/core/entity/dictionary.py`:
+    - "라단 페스티벌" → "Starscourge Radahn" 매핑 추가
+    - "별의 후예 라단" → "Starscourge Radahn" 매핑 추가
+    - "레드메인 성/레드메인" → "Redmane Castle" 매핑 추가
+- **테스트 결과**:
+  - Before: 출처 `Builds` 페이지 (관련 없는 빌드 정보)
+  - After: 출처 `Starscourge+Radahn` 페이지 (실제 보스 공략) ✅
+  - 답변 품질: NPC 소환, 2페이즈 유성 충돌 대응 등 실제 공략 정보 제공
+- **상태**: ✅ 완료
+
+---
+
 ## 2026-02-24
 
 ### [WL-017] Reddit 데이터 수집 확장 (reddit-expansion)
