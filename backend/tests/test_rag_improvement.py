@@ -7,13 +7,29 @@
 """
 
 import pytest
+import sys
 from unittest.mock import MagicMock, patch
+
+# Mock settings before importing any app modules
+mock_settings = MagicMock()
+mock_settings.SUPABASE_URL = "https://mock.supabase.co"
+mock_settings.SUPABASE_SERVICE_KEY = "mock-key"
+mock_settings.ANTHROPIC_API_KEY = "mock-anthropic-key"
+mock_settings.OPENAI_API_KEY = "mock-openai-key"
+
+
+@pytest.fixture(autouse=True)
+def mock_dependencies():
+    """Mock external dependencies for all tests."""
+    with patch("app.config.get_settings", return_value=mock_settings):
+        with patch("app.db.supabase.get_supabase_client", return_value=MagicMock()):
+            yield
 
 
 class TestEntityAutoExtractor:
     """EntityAutoExtractor 단위 테스트."""
 
-    def test_extract_from_wiki_title(self):
+    def test_extract_from_wiki_title(self, mock_dependencies):
         """Wiki 제목에서 엔티티명 추출 테스트."""
         from app.core.entity.auto_extractor import EntityAutoExtractor
 
@@ -34,7 +50,7 @@ class TestEntityAutoExtractor:
         name = extractor._extract_entity_name(title)
         assert name == "Hornet"
 
-    def test_extract_plain_title(self):
+    def test_extract_plain_title(self, mock_dependencies):
         """일반 제목에서 엔티티명 추출 테스트."""
         from app.core.entity.auto_extractor import EntityAutoExtractor
 
@@ -45,7 +61,7 @@ class TestEntityAutoExtractor:
         name = extractor._extract_entity_name(title)
         assert name == "Radahn Festival"
 
-    def test_exclude_generic_pages(self):
+    def test_exclude_generic_pages(self, mock_dependencies):
         """일반 페이지 제외 테스트."""
         from app.core.entity.auto_extractor import EntityAutoExtractor
 
@@ -65,7 +81,7 @@ class TestEntityAutoExtractor:
         assert extractor._should_exclude("Radahn") is False
         assert extractor._should_exclude("Hornet") is False
 
-    def test_merge_with_manual_dict(self):
+    def test_merge_with_manual_dict(self, mock_dependencies):
         """수동 사전과 자동 추출 병합 테스트."""
         from app.core.entity.auto_extractor import EntityAutoExtractor
 
@@ -88,10 +104,7 @@ class TestEntityAutoExtractor:
         assert merged["라단"] == "Radahn"
         assert merged["모르곳"] == "Morgott"
 
-        # 중복되지 않은 자동 추출 항목은 추가되지 않음 (이미 manual_values에 존재)
-        # Malenia, Radahn은 manual_dict의 values에 있으므로 추가 안됨
-
-    def test_cache_functionality(self):
+    def test_cache_functionality(self, mock_dependencies):
         """캐시 기능 테스트."""
         from app.core.entity.auto_extractor import EntityAutoExtractor
 
@@ -118,7 +131,7 @@ class TestEntityAutoExtractor:
 class TestMultiKeywordRetriever:
     """다중 키워드 검색 테스트."""
 
-    def test_extract_entity_keywords(self):
+    def test_extract_entity_keywords(self, mock_dependencies):
         """대문자 엔티티 키워드 추출 테스트."""
         from app.core.rag.retriever import VectorRetriever
 
@@ -130,7 +143,7 @@ class TestMultiKeywordRetriever:
         # Malenia는 대문자로 시작하는 엔티티
         assert "Malenia" in keywords
 
-    def test_extract_phase_keywords(self):
+    def test_extract_phase_keywords(self, mock_dependencies):
         """숫자 포함 키워드 (phase 2 등) 추출 테스트."""
         from app.core.rag.retriever import VectorRetriever
 
@@ -144,7 +157,7 @@ class TestMultiKeywordRetriever:
         has_number = any("2" in kw for kw in keywords)
         assert has_phase or has_number
 
-    def test_extract_game_terms(self):
+    def test_extract_game_terms(self, mock_dependencies):
         """게임 특화 용어 추출 테스트."""
         from app.core.rag.retriever import VectorRetriever
 
@@ -157,7 +170,7 @@ class TestMultiKeywordRetriever:
         keywords_lower = [kw.lower() for kw in keywords]
         assert any(term in keywords_lower for term in ["dodge", "parry", "build"])
 
-    def test_stop_words_excluded(self):
+    def test_stop_words_excluded(self, mock_dependencies):
         """Stop words 제외 테스트."""
         from app.core.rag.retriever import VectorRetriever
 
@@ -172,7 +185,7 @@ class TestMultiKeywordRetriever:
         assert "can" not in keywords_lower
         assert "the" not in keywords_lower
 
-    def test_max_keywords_limit(self):
+    def test_max_keywords_limit(self, mock_dependencies):
         """최대 키워드 수 제한 테스트."""
         from app.core.rag.retriever import VectorRetriever
 
@@ -188,7 +201,7 @@ class TestMultiKeywordRetriever:
 class TestSourceDiversity:
     """출처 다양성 테스트."""
 
-    def test_max_per_source_limit(self):
+    def test_max_per_source_limit(self, mock_dependencies):
         """출처당 최대 청크 수 제한 테스트."""
         from app.core.rag.reranker import MultiStageReranker
 
@@ -213,7 +226,7 @@ class TestSourceDiversity:
         assert wiki_count == 2
         assert reddit_count == 2
 
-    def test_url_normalization(self):
+    def test_url_normalization(self, mock_dependencies):
         """URL 정규화 (query/fragment 제거) 테스트."""
         from app.core.rag.reranker import MultiStageReranker
 
@@ -230,7 +243,7 @@ class TestSourceDiversity:
         # 같은 페이지로 인식되어 2개만 반환
         assert len(diverse) == 2
 
-    def test_empty_chunks(self):
+    def test_empty_chunks(self, mock_dependencies):
         """빈 청크 리스트 테스트."""
         from app.core.rag.reranker import MultiStageReranker
 
@@ -239,7 +252,7 @@ class TestSourceDiversity:
         diverse = reranker.ensure_source_diversity([], max_per_source=2)
         assert diverse == []
 
-    def test_single_source(self):
+    def test_single_source(self, mock_dependencies):
         """단일 출처 테스트."""
         from app.core.rag.reranker import MultiStageReranker
 
@@ -260,7 +273,7 @@ class TestSourceDiversity:
 class TestTranslatorFallback:
     """번역 폴백 테스트."""
 
-    def test_fallback_with_dictionary(self):
+    def test_fallback_with_dictionary(self, mock_dependencies):
         """엔티티 사전 기반 폴백 테스트."""
         from app.core.rag.translator import QueryTranslator
 
@@ -271,7 +284,7 @@ class TestTranslatorFallback:
 
             # 폴백 메서드 직접 테스트
             with patch(
-                "app.core.rag.translator.get_entity_dictionary"
+                "app.core.entity.dictionary.get_entity_dictionary"
             ) as mock_get_dict:
                 mock_dict = MagicMock()
                 mock_dict.translate_to_english.return_value = "Malenia strategy"
@@ -286,7 +299,7 @@ class TestTranslatorFallback:
 class TestRerankerMultiStage:
     """MultiStageReranker 통합 테스트."""
 
-    def test_rerank_with_source_diversity(self):
+    def test_rerank_with_source_diversity(self, mock_dependencies):
         """출처 다양성 포함 리랭킹 테스트."""
         from app.core.rag.reranker import MultiStageReranker
 
