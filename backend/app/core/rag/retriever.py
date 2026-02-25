@@ -1,9 +1,13 @@
 """Vector Retriever for BossHelp RAG."""
 
+import json
+import logging
 import re
 from supabase import Client
 from functools import lru_cache
 from app.db.supabase import get_supabase_client
+
+logger = logging.getLogger(__name__)
 
 # 게임 특화 용어 (검색 키워드로 중요)
 GAME_TERMS = {
@@ -29,6 +33,7 @@ class VectorRetriever:
         limit: int = 10,
         threshold: float = 0.5,
         query: str = "",
+        entities: list[str] | None = None,
     ) -> list[dict]:
         """
         Search for similar chunks using vector similarity.
@@ -40,12 +45,36 @@ class VectorRetriever:
             category: Optional category filter
             limit: Maximum number of results
             threshold: Minimum similarity threshold
+            query: Original query text
+            entities: Extracted entities for filtering (NEW)
 
         Returns:
             List of matching chunks with similarity scores
         """
         # Map spoiler level to allowed levels
         spoiler_levels = self._get_allowed_spoiler_levels(spoiler_level)
+
+        # NEW: 엔티티 기반 1차 필터링 시도
+        if entities:
+            logger.info(f"[Retriever] Entity-based pre-filtering: {entities}")
+            pre_filtered = self._filter_by_entities(
+                game_id=game_id,
+                entities=entities,
+                spoiler_levels=spoiler_levels,
+                limit=500,
+            )
+
+            if pre_filtered:
+                logger.info(f"[Retriever] Pre-filtered {len(pre_filtered)} chunks by entities")
+                # 엔티티 필터링된 청크에서 벡터 검색
+                chunks = self._search_within_chunks(
+                    embedding=embedding,
+                    chunks=pre_filtered,
+                    limit=limit,
+                )
+                # 엔티티 부스트 적용
+                chunks = self._apply_entity_boost(chunks, entities)
+                return chunks
 
         # Build RPC call for vector search
         # This requires a Supabase function: search_chunks
@@ -54,7 +83,7 @@ class VectorRetriever:
             search_keywords = self._extract_search_keywords(query)
             search_keyword = search_keywords[0] if search_keywords else None
 
-            print(f"[Retriever] RPC call: game={game_id}, spoiler_levels={spoiler_levels}, search_text={search_keyword}")
+            logger.info(f"[Retriever] RPC call: game={game_id}, spoiler_levels={spoiler_levels}, search_text={search_keyword}")
 
             response = self.client.rpc(
                 "search_chunks",
@@ -69,13 +98,13 @@ class VectorRetriever:
                 },
             ).execute()
 
-            print(f"[Retriever] RPC result count: {len(response.data) if response.data else 0}")
+            logger.info(f"[Retriever] RPC result count: {len(response.data) if response.data else 0}")
 
             if response.data:
                 return response.data
 
             # 텍스트 검색 결과가 없으면 텍스트 없이 재시도
-            print(f"[Retriever] No results with text search, trying without")
+            logger.info("[Retriever] No results with text search, trying without")
             response = self.client.rpc(
                 "search_chunks",
                 {
@@ -89,11 +118,11 @@ class VectorRetriever:
                 },
             ).execute()
 
-            print(f"[Retriever] RPC retry result count: {len(response.data) if response.data else 0}")
+            logger.info(f"[Retriever] RPC retry result count: {len(response.data) if response.data else 0}")
             return response.data or []
 
         except Exception as e:
-            print(f"[Retriever] RPC failed: {e}, using fallback")
+            logger.warning(f"[Retriever] RPC failed: {e}, using fallback")
             # Fallback to direct query if RPC not available
             return self._fallback_search(
                 embedding, game_id, spoiler_levels, category, limit
@@ -174,7 +203,7 @@ class VectorRetriever:
         """키워드 매칭으로 관련 청크 우선순위 부여."""
         # 다중 키워드 추출 (중요도 순)
         keywords = [kw.lower() for kw in self._extract_search_keywords(query)]
-        print(f"[Retriever] Boosting by keywords: {keywords}")
+        logger.debug(f"[Retriever] Boosting by keywords: {keywords}")
 
         for chunk in chunks:
             title = (chunk.get("title") or "").lower()
@@ -191,7 +220,196 @@ class VectorRetriever:
             chunk["similarity"] = min(1.0, similarity + boost)
             chunk["keyword_matches"] = match_count
 
-            print(f"[Retriever] Chunk '{title[:30]}': sim={similarity:.3f}, boost={boost:.2f}, matches={match_count}")
+        # 다시 정렬
+        chunks.sort(key=lambda x: x.get("similarity", 0), reverse=True)
+        return chunks
+
+    def _filter_by_entities(
+        self,
+        game_id: str,
+        entities: list[str],
+        spoiler_levels: list[str],
+        limit: int = 500,
+    ) -> list[dict]:
+        """
+        엔티티 기반 1차 필터링.
+
+        우선순위:
+        1. primary_entity 일치 (해당 엔티티 전용 페이지)
+        2. entity_tags 포함 (해당 엔티티 언급된 페이지)
+
+        Args:
+            game_id: 게임 ID
+            entities: 검색할 엔티티 목록
+            spoiler_levels: 허용 스포일러 레벨
+            limit: 최대 반환 수
+
+        Returns:
+            필터링된 청크 목록
+        """
+        results = []
+        existing_ids: set[str] = set()
+
+        for entity in entities:
+            entity_lower = entity.lower()
+
+            # 1. primary_entity 일치 (ILIKE)
+            try:
+                response = (
+                    self.client.table("chunks")
+                    .select("id", "title", "content", "category", "source_url",
+                            "quality_score", "spoiler_level", "entity_tags",
+                            "primary_entity", "entity_type")
+                    .eq("game_id", game_id)
+                    .eq("is_active", True)
+                    .in_("spoiler_level", spoiler_levels)
+                    .ilike("primary_entity", f"%{entity_lower}%")
+                    .limit(100)
+                    .execute()
+                )
+
+                for chunk in response.data or []:
+                    if chunk["id"] not in existing_ids:
+                        chunk["entity_match_type"] = "primary"
+                        results.append(chunk)
+                        existing_ids.add(chunk["id"])
+
+            except Exception as e:
+                logger.warning(f"[Retriever] primary_entity search failed: {e}")
+
+            # 2. entity_tags 포함
+            if len(results) < limit:
+                try:
+                    response = (
+                        self.client.table("chunks")
+                        .select("id", "title", "content", "category", "source_url",
+                                "quality_score", "spoiler_level", "entity_tags",
+                                "primary_entity", "entity_type")
+                        .eq("game_id", game_id)
+                        .eq("is_active", True)
+                        .in_("spoiler_level", spoiler_levels)
+                        .contains("entity_tags", [entity_lower])
+                        .limit(100)
+                        .execute()
+                    )
+
+                    for chunk in response.data or []:
+                        if chunk["id"] not in existing_ids:
+                            chunk["entity_match_type"] = "tags"
+                            results.append(chunk)
+                            existing_ids.add(chunk["id"])
+
+                except Exception as e:
+                    logger.warning(f"[Retriever] entity_tags search failed: {e}")
+
+            if len(results) >= limit:
+                break
+
+        logger.info(f"[Retriever] Entity filter found {len(results)} chunks")
+        return results[:limit]
+
+    def _search_within_chunks(
+        self,
+        embedding: list[float],
+        chunks: list[dict],
+        limit: int = 10,
+    ) -> list[dict]:
+        """
+        주어진 청크 목록 내에서 벡터 유사도 계산.
+
+        Note: embedding 필드가 없는 경우 기본 점수 적용.
+
+        Args:
+            embedding: 쿼리 임베딩
+            chunks: 검색 대상 청크 목록
+            limit: 반환할 최대 개수
+
+        Returns:
+            유사도 정렬된 청크 목록
+        """
+        # 청크에 embedding이 없으면 DB에서 다시 조회
+        chunk_ids = [c["id"] for c in chunks]
+
+        if chunk_ids:
+            try:
+                # embedding 포함하여 다시 조회
+                response = (
+                    self.client.table("chunks")
+                    .select("*")
+                    .in_("id", chunk_ids[:100])  # 최대 100개
+                    .execute()
+                )
+
+                if response.data:
+                    chunks_with_embedding = {c["id"]: c for c in response.data}
+
+                    for chunk in chunks:
+                        if chunk["id"] in chunks_with_embedding:
+                            full_chunk = chunks_with_embedding[chunk["id"]]
+                            if full_chunk.get("embedding"):
+                                # DB에서 가져온 embedding이 문자열이면 파싱
+                                chunk_embedding = full_chunk["embedding"]
+                                if isinstance(chunk_embedding, str):
+                                    chunk_embedding = json.loads(chunk_embedding)
+                                similarity = self._cosine_similarity(
+                                    embedding, chunk_embedding
+                                )
+                                chunk["similarity"] = similarity
+                                chunk["embedding"] = chunk_embedding
+                            else:
+                                # embedding 없으면 entity match 기반 점수
+                                chunk["similarity"] = (
+                                    0.6 if chunk.get("entity_match_type") == "primary" else 0.4
+                                )
+            except Exception as e:
+                logger.warning(f"[Retriever] Failed to fetch embeddings: {e}")
+                # 폴백: entity match 기반 점수
+                for chunk in chunks:
+                    chunk["similarity"] = (
+                        0.6 if chunk.get("entity_match_type") == "primary" else 0.4
+                    )
+
+        # 유사도로 정렬
+        chunks.sort(key=lambda x: x.get("similarity", 0), reverse=True)
+        return chunks[:limit]
+
+    def _apply_entity_boost(
+        self,
+        chunks: list[dict],
+        entities: list[str],
+    ) -> list[dict]:
+        """
+        엔티티 매칭 기반 점수 부스트.
+
+        primary_entity 일치 시 더 높은 부스트 적용.
+
+        Args:
+            chunks: 청크 목록
+            entities: 검색 엔티티 목록
+
+        Returns:
+            부스트 적용된 청크 목록
+        """
+        for chunk in chunks:
+            primary_entity = (chunk.get("primary_entity") or "").lower()
+            entity_tags = [t.lower() for t in chunk.get("entity_tags", [])]
+
+            boost = 0.0
+
+            for entity in entities:
+                entity_lower = entity.lower()
+
+                # primary_entity 일치: +0.25
+                if entity_lower in primary_entity or primary_entity in entity_lower:
+                    boost += 0.25
+                    chunk["primary_entity_match"] = True
+                # entity_tags 포함: +0.1
+                elif entity_lower in entity_tags:
+                    boost += 0.1
+
+            current_similarity = chunk.get("similarity", 0.5)
+            chunk["similarity"] = min(1.0, current_similarity + boost)
+            chunk["entity_boost"] = boost
 
         # 다시 정렬
         chunks.sort(key=lambda x: x.get("similarity", 0), reverse=True)
@@ -230,7 +448,11 @@ class VectorRetriever:
         chunks_with_scores = []
         for chunk in response.data:
             if chunk.get("embedding"):
-                similarity = self._cosine_similarity(embedding, chunk["embedding"])
+                # DB에서 가져온 embedding이 문자열이면 파싱
+                chunk_embedding = chunk["embedding"]
+                if isinstance(chunk_embedding, str):
+                    chunk_embedding = json.loads(chunk_embedding)
+                similarity = self._cosine_similarity(embedding, chunk_embedding)
                 chunk["similarity"] = similarity
                 chunks_with_scores.append(chunk)
 

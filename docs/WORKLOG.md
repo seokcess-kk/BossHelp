@@ -6,22 +6,38 @@
 
 ## 2026-02-25
 
+### [WL-019] 임베딩 파싱 버그 수정 (검색 유사도 0.25 문제)
+- **문제**: 검색 유사도 점수가 항상 0.25로 균일하게 나옴
+- **원인**: DB에서 가져온 embedding이 JSON 문자열인데, list로 파싱하지 않고 사용
+- **수정 파일**:
+  - `backend/app/core/rag/retriever.py`:
+    - `json` import 추가
+    - `_search_within_chunks()`: embedding이 string이면 json.loads() 파싱
+    - 벡터 유사도 계산하는 두 곳 모두 수정
+- **결과**:
+  - 유사도 점수: 0.25 → 0.4986~0.6177 (정상 범위)
+  - 검색 시간: 1.6~3.3초 (기존 8-15초에서 60-80% 개선)
+- **상태**: ✅ 완료
+
 ### [WL-018] "라단 페스티벌" 검색 결과 개선
 - **요청**: "라단 페스티벌 공략" 질문 시 Builds 페이지가 반환되는 문제 해결
-- **원인 분석**:
-  - "Starscourge Radahn" 페이지 청크 20개 존재 ✅
-  - 해당 청크에 "festival" 키워드 없음 ❌
-  - 엔티티 사전에 "페스티벌" 관련 항목 없음 ❌
-  - "festival" 키워드가 있는 Builds 페이지가 반환됨
-- **수정 내용**:
+- **원인 분석 (1차)**:
+  - 엔티티 사전에 "페스티벌" 관련 항목 없음
+- **1차 수정**:
   - `backend/app/core/entity/dictionary.py`:
     - "라단 페스티벌" → "Starscourge Radahn" 매핑 추가
     - "별의 후예 라단" → "Starscourge Radahn" 매핑 추가
-    - "레드메인 성/레드메인" → "Redmane Castle" 매핑 추가
-- **테스트 결과**:
-  - Before: 출처 `Builds` 페이지 (관련 없는 빌드 정보)
-  - After: 출처 `Starscourge+Radahn` 페이지 (실제 보스 공략) ✅
-  - 답변 품질: NPC 소환, 2페이즈 유성 충돌 대응 등 실제 공략 정보 제공
+- **원인 분석 (2차 - Zero Script QA에서 발견)**:
+  - `QueryTranslator`가 LLM(Haiku)으로 직접 번역하면서 **엔티티 사전 무시**
+  - "라단 페스티벌" → "Radahn Festival"로 잘못 번역됨
+- **2차 수정**:
+  - `backend/app/core/rag/translator.py`:
+    - `_translate_with_haiku()`: Haiku 번역 **전에** 엔티티 사전으로 선처리
+    - "라단 페스티벌 공략" → "Starscourge Radahn 공략" → "How to defeat Starscourge Radahn?"
+- **최종 테스트 결과**:
+  - 번역: "라단 페스티벌 공략" → "How to defeat Starscourge Radahn in Elden Ring?" ✅
+  - 출처: `Starscourge+Radahn` 페이지 ✅ (Builds 페이지 없음)
+  - 답변: NPC 소환, 토렌트 사용, 블라이드/알렉산더 등 실제 공략 정보 ✅
 - **상태**: ✅ 완료
 
 ---
