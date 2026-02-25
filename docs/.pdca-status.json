@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-25T07:01:14.537Z",
+  "lastUpdated": "2026-02-25T07:17:59.246Z",
   "activeFeatures": [
     "bosshelp-mvp",
     "frontend",
@@ -319,21 +319,12 @@
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\cache\\embedding_cache.py"
     },
     "rag-improvement": {
-      "name": "RAG 파이프라인 개선",
-      "description": "기존 Vector RAG 파이프라인 품질 향상 (+10% 정확도)",
-      "phase": "completed",
-      "status": "completed",
+      "phase": "archived",
       "matchRate": 93.75,
       "iterationCount": 1,
-      "documents": {
-        "plan": "docs/01-plan/features/rag-improvement.plan.md",
-        "design": "docs/02-design/features/rag-improvement.design.md",
-        "analysis": "docs/03-analysis/rag-improvement.analysis.md",
-        "report": "docs/04-report/features/rag-improvement.report.md"
-      },
-      "createdAt": "2026-02-25T05:45:00.000Z",
-      "updatedAt": "2026-02-25T07:30:00.000Z",
-      "completedAt": "2026-02-25T07:30:00.000Z"
+      "startedAt": "2026-02-25T05:45:00.000Z",
+      "archivedAt": "2026-02-25T07:45:00.000Z",
+      "archivedTo": "docs/archive/2026-02/rag-improvement/"
     },
     "tests": {
       "phase": "do",
@@ -344,7 +335,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-25T07:01:12.251Z",
-        "lastUpdated": "2026-02-25T07:01:14.537Z"
+        "lastUpdated": "2026-02-25T07:17:59.246Z"
       },
       "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\tests\\test_rag_improvement.py"
     }
@@ -370,7 +361,7 @@
   "session": {
     "startedAt": "2026-02-14T16:02:30.113Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-25T07:01:14.537Z"
+    "lastActivity": "2026-02-25T07:17:59.246Z"
   },
   "history": [
     {
@@ -1603,6 +1594,18 @@
     },
     {
       "timestamp": "2026-02-25T07:01:14.537Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:17:34.090Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:17:59.246Z",
       "feature": "tests",
       "phase": "do",
       "action": "updated"
