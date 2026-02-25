@@ -26,6 +26,34 @@ Crawl → Clean → Classify → Quality Score → Chunk → Embed → Store
 (reddit/wiki)  (cleaner.py)  (classifier.py)  (quality.py)  (chunker.py)  (embedder.py)
 ```
 
+## Directory Structure
+```
+BossHelp/
+├── backend/           # FastAPI 서버 + RAG 파이프라인
+│   ├── app/
+│   │   ├── api/v1/    # Public endpoints (ask, games, feedback)
+│   │   ├── api/admin/ # Internal endpoints (crawl trigger)
+│   │   ├── core/rag/  # RAG 핵심 (pipeline, retriever, reranker, prompt)
+│   │   ├── core/llm/  # Claude + OpenAI 클라이언트
+│   │   ├── core/entity/ # 게임별 엔티티 사전
+│   │   └── db/        # Supabase 연결 + Pydantic 모델
+│   └── venv/          # Python 가상환경
+├── frontend/          # Next.js 16 (App Router)
+│   └── src/
+│       ├── app/       # 페이지 (/, /chat/[gameId], /games/[gameId])
+│       ├── components/# UI 컴포넌트 (chat/, game/, ui/, layout/)
+│       ├── hooks/     # useChat, useGames, useFeedback
+│       ├── stores/    # Zustand (chat-store, game-store)
+│       └── lib/       # API 클라이언트, 유틸리티
+├── crawler/           # 데이터 수집 파이프라인
+│   ├── crawlers/      # reddit.py, wiki.py
+│   ├── processors/    # cleaner, classifier, chunker, embedder, quality
+│   └── pipeline.py    # 오케스트레이터
+├── supabase/
+│   └── migrations/    # SQL 스키마 파일
+└── docs/              # PDCA 문서
+```
+
 ## Commands
 
 ```bash
@@ -36,7 +64,12 @@ cd frontend && npm run lint
 
 # Backend (port 8000)
 cd backend && uvicorn app.main:app --reload
-cd backend && python -m pytest
+
+# Backend 테스트
+cd backend && python -m pytest                    # 전체 테스트
+cd backend && python -m pytest tests/test_rag.py  # 단일 파일
+cd backend && python -m pytest -k "test_pipeline" # 특정 테스트명
+cd backend && python -m pytest -v --tb=short      # 상세 출력
 
 # Crawler
 cd crawler && python pipeline.py --mode initial --games elden-ring
@@ -78,6 +111,32 @@ cd crawler && python pipeline.py --mode update
 - `chunks` - 벡터 DB (embedding VECTOR(1536))
 - `games` - 지원 게임 목록
 - `conversations` - 대화 로그
+
+## API Specification
+
+### Request/Response Format
+```typescript
+// POST /api/v1/ask
+Request: { game_id, question, spoiler_level, session_id, category?, expand? }
+Response: { answer, sources[], conversation_id, has_detail, confidence, latency_ms, cached }
+
+// POST /api/v1/ask/stream (SSE)
+Events: { type: 'text'|'sources'|'meta'|'done'|'error', data }
+
+// GET /api/v1/games
+Response: { games: [{ id, title, genre, thumbnail_url, is_active }] }
+
+// POST /api/v1/feedback
+Request: { conversation_id, is_helpful }
+Response: { success }
+```
+
+### Type Definitions
+- `SpoilerLevel`: `'none'` | `'light'` | `'heavy'`
+- `ConfidenceLevel`: `'high'` | `'medium'` | `'low'`
+- `Category`: `'boss_guide'` | `'build_guide'` | `'progression_route'` | `'npc_quest'` | `'item_location'` | `'mechanic_tip'` | `'secret_hidden'`
+- `SourceType`: `'reddit'` | `'wiki'` | `'steam'`
+- `Genre`: `'soulslike'` | `'metroidvania'` | `'action_rpg'`
 
 ## Conventions
 - API endpoints: `/api/v1/...` (public), `/api/admin/...` (internal)
