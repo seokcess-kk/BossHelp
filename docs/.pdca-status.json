@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-25T11:15:16.679Z",
+  "lastUpdated": "2026-02-26T02:48:51.032Z",
   "activeFeatures": [
     "bosshelp-mvp",
     "entity-tagging-improvement",
@@ -254,9 +254,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:36:08.038Z",
-        "lastUpdated": "2026-02-25T10:08:12.520Z"
+        "lastUpdated": "2026-02-26T02:48:51.032Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\entity\\__init__.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\entity\\dictionary.py"
     },
     "crawler": {
       "phase": "do",
@@ -379,7 +379,7 @@
   "session": {
     "startedAt": "2026-02-14T16:02:30.113Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-25T11:15:16.679Z"
+    "lastActivity": "2026-02-26T02:48:51.032Z"
   },
   "history": [
     {
@@ -1817,6 +1817,42 @@
     {
       "timestamp": "2026-02-25T11:15:16.678Z",
       "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-26T02:47:11.243Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-26T02:47:31.005Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-26T02:47:50.889Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-26T02:48:14.806Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-26T02:48:32.094Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-26T02:48:51.032Z",
+      "feature": "entity",
       "phase": "do",
       "action": "updated"
     }
