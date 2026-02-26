@@ -1,8 +1,9 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-25T07:17:59.246Z",
+  "lastUpdated": "2026-02-25T11:15:16.679Z",
   "activeFeatures": [
     "bosshelp-mvp",
+    "entity-tagging-improvement",
     "frontend",
     "stores",
     "ui",
@@ -44,6 +45,23 @@
       "createdAt": "2026-02-15T09:00:00.000Z",
       "updatedAt": "2026-02-23T05:45:00.000Z",
       "completedAt": "2026-02-23T05:45:00.000Z"
+    },
+    "entity-tagging-improvement": {
+      "name": "Entity Tagging Improvement",
+      "description": "청크 레벨 엔티티 태깅 정확도 개선을 통한 RAG 검색 품질 향상",
+      "phase": "completed",
+      "status": "completed",
+      "matchRate": 92,
+      "iterationCount": 1,
+      "documents": {
+        "plan": "docs/01-plan/features/entity-tagging-improvement.plan.md",
+        "design": "docs/02-design/features/entity-tagging-improvement.design.md",
+        "analysis": "docs/03-analysis/entity-tagging-improvement.analysis.md",
+        "report": "docs/04-report/features/entity-tagging-improvement.report.md"
+      },
+      "createdAt": "2026-02-25T09:00:00.000Z",
+      "updatedAt": "2026-02-25T11:00:00.000Z",
+      "completedAt": "2026-02-25T11:00:00.000Z"
     },
     "frontend": {
       "phase": "do",
@@ -145,9 +163,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:24:09.858Z",
-        "lastUpdated": "2026-02-23T12:23:29.317Z"
+        "lastUpdated": "2026-02-25T08:33:41.217Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\test_rag.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\analyze_content_quality.py"
     },
     "db": {
       "phase": "do",
@@ -210,9 +228,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:35:46.816Z",
-        "lastUpdated": "2026-02-25T06:50:45.225Z"
+        "lastUpdated": "2026-02-25T11:15:16.678Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\translator.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\rag\\retriever.py"
     },
     "llm": {
       "phase": "do",
@@ -236,9 +254,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:36:08.038Z",
-        "lastUpdated": "2026-02-25T06:48:43.679Z"
+        "lastUpdated": "2026-02-25T10:08:12.520Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\entity\\dictionary.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\app\\core\\entity\\__init__.py"
     },
     "crawler": {
       "phase": "do",
@@ -249,9 +267,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-14T16:48:42.931Z",
-        "lastUpdated": "2026-02-25T05:28:53.261Z"
+        "lastUpdated": "2026-02-25T10:40:11.690Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\crawl_specific_pages.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\crawler\\migrate_entity_tags.py"
     },
     "crawlers": {
       "phase": "do",
@@ -335,9 +353,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-25T07:01:12.251Z",
-        "lastUpdated": "2026-02-25T07:17:59.246Z"
+        "lastUpdated": "2026-02-25T10:17:56.644Z"
       },
-      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\tests\\test_rag_improvement.py"
+      "lastFile": "C:\\Users\\assag\\solution\\BossHelp\\backend\\tests\\test_type_classifier.py"
     }
   },
   "pipeline": {
@@ -361,7 +379,7 @@
   "session": {
     "startedAt": "2026-02-14T16:02:30.113Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-25T07:17:59.246Z"
+    "lastActivity": "2026-02-25T11:15:16.679Z"
   },
   "history": [
     {
@@ -1607,6 +1625,198 @@
     {
       "timestamp": "2026-02-25T07:17:59.246Z",
       "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:55:37.804Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:56:22.471Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:57:03.697Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:57:15.381Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T07:57:32.376Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:08:32.337Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:10:52.314Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:13:09.372Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:21:48.122Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:22:36.796Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:23:01.092Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:29:23.876Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:30:11.263Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:30:45.935Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T08:33:41.217Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:05:38.052Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:06:22.031Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:06:54.611Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:07:10.486Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:07:30.006Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:08:00.268Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:08:12.520Z",
+      "feature": "entity",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:15:53.415Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:16:22.580Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:17:43.934Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:17:50.407Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:17:56.644Z",
+      "feature": "tests",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T10:40:11.690Z",
+      "feature": "crawler",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T11:14:43.120Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T11:14:54.980Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T11:15:03.376Z",
+      "feature": "rag",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-25T11:15:16.678Z",
+      "feature": "rag",
       "phase": "do",
       "action": "updated"
     }
